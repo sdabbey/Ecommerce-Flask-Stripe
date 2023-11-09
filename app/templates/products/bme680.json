@@ -1,6 +1,6 @@
 {
     "id": "prod_L3QBiEdGWquAHl",
-    "name": "BME680 Environmental Sensor",
+    "name": "BME680 Sensor",
     "currency": "usd",
     "price": "20.0",
     "full_description": "The BME680 is a digital 4 - in-1 sensor with gas, humidity, pressure and temperature measurement based on proven sensing principles. The sensor module is housed in an extremely compact metal-lid LGA package with a footprint of only 3.0 × 3.0 mm² with a maximum height of 1.00 mm (0.93 ± 0.07 mm). Its small dimensions and its low power consumption enable the integration in battery-powered or frequency-coupled devices, such as handsets or wearables.",
