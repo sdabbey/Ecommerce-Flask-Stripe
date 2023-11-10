@@ -17,7 +17,7 @@
         <div class="col-12 mx-auto">
           <div class="row py-lg-7 py-5">
             <div class="col-lg-3 col-md-5 position-relative my-auto">
-              <img class="img border-radius-lg  w-100 position-relative z-index-2" 
+              <img class="img border-radius-lg max-width-200 w-100 position-relative z-index-2" 
                 {% if featured_product.img_card %} 
                   {% if featured_product.img_card|starts_with %}
                     src="{{ featured_product.img_card }}"
@@ -51,7 +51,7 @@
                 </div>
               </div>
               <p class="text-lg mb-0">
-                {{ featured_product.full_description }} 
+                {{ featured_product.short_description }} 
                 <br>
                 <a href="{{ url_for('products_index') }}{{ featured_product.slug }}" class="text-info icon-move-right">See Product
                   <i class="fas fa-arrow-right text-sm ms-1"></i>
