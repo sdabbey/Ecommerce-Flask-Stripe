@@ -82,7 +82,7 @@ def load_product( aJSONPath ):
     product.info  = data["info"]
     product.currency = data["currency"]
     product.price = int( float(data["price"]) )
-    product.full_description  = data["short_description"]
+    product.short_description  = data["short_description"]
     product.full_description  = data["full_description"]
     product.slug  = get_slug( aJSONPath )
     try:
