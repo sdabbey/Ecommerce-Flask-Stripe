@@ -12,6 +12,7 @@ class Product:
     price    = 0
     currency = ''
     info     = ''
+    short_description = ''
     full_description = ''
     slug     = '' 
     img_main   = ''
