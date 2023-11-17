@@ -49,11 +49,20 @@
           </div>
           <div class="tab-content tab-space">
             <div class="tab-pane active" id="preview-breadcrumb">
-              <iframe width="100%" height="300px" srcdoc='<!doctype html>
-
-                <html>
-
-                  <body>
+              <iframe width="100%" height="300px" srcdoc='
+              <!doctype html>
+              <html>
+                <head>
+                  <meta charset="utf-8">
+                  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+                  <style>
+                    /* Add any required styles here */
+                    body { font-family: Arial, sans-serif; }
+                    pre { white-space: pre-wrap; word-wrap: break-word; }
+                  </style>
+                </head>
+                <body>
+                  <pre>
                 
                 #!/usr/bin/env python
 
@@ -184,6 +193,7 @@
                         print("Sensor data inserted:", temperature, humidity, pressure, gas_resistance, iaq, timestamp)
                       
                         time.sleep(60)  # Wait for 60 seconds before next reading
+                  </pre>
                     </body>
                     </html>
         '></iframe>
