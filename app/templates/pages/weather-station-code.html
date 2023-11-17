@@ -134,7 +134,7 @@
                   
                   print(&#39;Collecting gas resistance burn-in data for 5 mins\n') 
   
-                  while curr_time - start_time < burn_in_time:
+                  while curr_time - start_time &#60; burn_in_time:
                       curr_time = time.time()
                       if sensor.get_sensor_data() and sensor.data.heat_stable:
                           gas = sensor.data.gas_resistance
@@ -142,7 +142,7 @@
                           print(&#39;Gas: {0} Ohms&#39;.format(gas))
                           time.sleep(1)
                   
-                  gas_baseline = sum(burn_in_data[-50:]) / 50.0
+                  gas_baseline = sum(burn_in_data[-50:]) &#47; 50.0
                   
                   # Set the humidity baseline to 40%, an optimal indoor humidity
                   hum_baseline = 40.0
