@@ -50,6 +50,10 @@
           <div class="tab-content tab-space">
             <div class="tab-pane active" id="preview-breadcrumb">
               <iframe width="100%" height="300px" srcdoc='<!doctype html>
+
+                <html>
+
+                  <body>
                 
                 #!/usr/bin/env python
 
@@ -180,7 +184,8 @@
                         print("Sensor data inserted:", temperature, humidity, pressure, gas_resistance, iaq, timestamp)
                       
                         time.sleep(60)  # Wait for 60 seconds before next reading
-
+                    </body>
+                    </html>
         '></iframe>
             </div>
             <div class="tab-pane" id="code-breadcrumb">
