@@ -54,19 +54,19 @@
                 <html>
                   <head>
                     
-                    <meta charset="utf-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-                    <style>
-                      /* Add any required styles here */
-                      body { font-family: Arial, sans-serif; }
-                      pre { white-space: pre-wrap; word-wrap: break-word; }
-                    </style>
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+                    
+                    <!-- and it's easy to individually load additional languages -->
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
+                    
+                    <script>hljs.highlightAll();</script>
 
                   </head>
 
 
                   <body>
-                    <code><pre>
+                    <pre><code="python">
                       #!/usr/bin/env python
 
 import bme680
@@ -196,7 +196,7 @@ while True:
         print("Sensor data inserted:", temperature, humidity, pressure, gas_resistance, iaq, timestamp)
       
         time.sleep(60)  # Wait for 60 seconds before next reading          
-                    </pre></code>   
+                   </code>  </pre>  
                       </body>
                       </html> 
                       '></iframe>
