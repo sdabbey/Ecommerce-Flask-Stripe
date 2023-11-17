@@ -93,7 +93,7 @@ conn = psycopg2.connect(
     port="8812"
 )
 
-# Create the necessary table if it doesn't exist
+# Create the necessary table if it does not exist
 with conn:
     cursor = conn.cursor()
     cursor.execute("CREATE TABLE  IF NOT EXISTS weather_data (temperature DOUBLE, humidity DOUBLE, pressure DOUBLE, gas_resistance DOUBLE, iaq DOUBLE, timestamp TIMESTAMP) TIMESTAMP(timestamp) PARTITION BY DAY;")
