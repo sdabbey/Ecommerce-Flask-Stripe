@@ -132,8 +132,8 @@
                     # of the last 50 values to set the upper limit for calculating
                     # gas_baseline.
                 
-                print('Collecting gas resistance burn-in data for 5 mins\n')
-                
+                 print('Collecting gas resistance burn-in data for 5 mins\n') 
+
                 while curr_time - start_time < burn_in_time:
                     curr_time = time.time()
                     if sensor.get_sensor_data() and sensor.data.heat_stable:
