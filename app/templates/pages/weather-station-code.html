@@ -58,6 +58,13 @@
 
 <script>hljs.highlightAll();</script>
 
+// first, find all the div.code blocks
+document.querySelectorAll('div.code').forEach(el => {
+  // then highlight each
+  hljs.highlightElement(el);
+});
+<div>
+
                     <pre><code class="python">
                       #!/usr/bin/env python
 
@@ -188,7 +195,7 @@ while True:
         print("Sensor data inserted:", temperature, humidity, pressure, gas_resistance, iaq, timestamp)
       
         time.sleep(60)  # Wait for 60 seconds before next reading          
-                   </code>  </pre>  
+                   </code>  </pre>  </div>
                       </body>
                       </html> 
                       '></iframe>
