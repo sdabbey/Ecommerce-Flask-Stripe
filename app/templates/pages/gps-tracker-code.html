@@ -1,0 +1,263 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %} Breadcrumbs {% endblock title %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block body_class %} breadcrumbs-sections {% endblock body_class %}
+
+{% block content %}
+  
+  {% include "includes/navigation-light.html" %}
+
+  <div class="container mt-5">
+    <div class="row">
+      <div class="col-lg-12 mx-auto">
+        <div class="mb-4 w-25">
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="/presentation.html">GPS Tracker</a></li>
+              <li class="breadcrumb-item active" aria-current="page">Python Code</li>
+            </ol>
+          </nav>
+          <h4>Data Stream Processing</h4>
+        </div>
+        <div class="position-relative border-radius-xl overflow-hidden shadow-lg mb-7">
+          <div class="container border-bottom">
+            <div class="row justify-space-between py-2">
+              <div class="col-lg-3 me-auto">
+                <p class="lead text-dark pt-1 mb-0">data-stream-processing.py</p>
+              </div>
+              <div class="col-lg-3">
+                <div class="nav-wrapper position-relative end-0">
+                  <ul class="nav nav-pills nav-fill flex-row p-1" role="tablist">
+                    <li class="nav-item">
+                      <a class="nav-link mb-0 px-0 py-1 active" data-bs-toggle="tab" href="#preview-breadcrumb" role="tab" aria-controls="preview" aria-selected="true">
+                        <i class="fas fa-desktop text-sm me-2"></i> Preview
+                      </a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link mb-0 px-0 py-1" data-bs-toggle="tab" href="#code-breadcrumb" role="tab" aria-controls="code" aria-selected="false">
+                        <i class="fas fa-code text-sm me-2"></i> Code
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="tab-content tab-space">
+            <div class="tab-pane active" id="preview-breadcrumb">
+              <iframe width="100%" height="800px" srcdoc='<!doctype html>
+                <html>
+    <head>
+      
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
+
+<script>hljs.highlightAll();</script>
+    </head>
+    <body>
+      
+      <pre><code class="language-python" >             
+
+ 
+        import psycopg2
+        from time import sleep
+        import serial
+        
+        # Database Configuration
+        conn = psycopg2.connect(
+            dbname="qdb",
+            user="admin",
+            password="quest",
+            host="docker_host_ip_address",
+            port="8812"
+        )
+        
+        # Create table if it doesn't exist
+        with conn:
+            cursor = conn.cursor()
+            cursor.execute("CREATE TABLE IF NOT EXISTS gps_data (latitude DOUBLE, longitude DOUBLE, altitude DOUBLE, speed DOUBLE, timestamp TIMESTAMP) TIMESTAMP(timestamp) PARTITION BY DAY;")
+        
+        # Serial Configuration
+        portwrite = "/dev/ttyUSB2"
+        port = "/dev/ttyUSB1"
+        
+        def parseGPS(data, speed=None):
+            if data[0:6] == "$GPGGA":
+                sdata = data.split(",")
+                time = sdata[1]
+                lat = sdata[2]
+                dirLat = sdata[3]
+                lon = sdata[4]
+                dirLon = sdata[5]
+                altitude = sdata[9]
+        
+                latitude = float(lat[:2]) + float(lat[2:])/60
+                if dirLat == 'S':
+                    latitude = -latitude
+        
+                longitude = float(lon[:3]) + float(lon[3:])/60
+                if dirLon == 'W':
+                    longitude = -longitude
+        
+                altitude = float(altitude)
+        
+                with conn:
+                    cursor = conn.cursor()
+                    cursor.execute("INSERT INTO gps_data (latitude, longitude, altitude, speed, timestamp) VALUES (%s, %s, %s, %s, NOW());",
+                                   (latitude, longitude, altitude, speed))
+        
+            elif data[0:6] == "$GPRMC":
+                sdata = data.split(",")
+                speed = float(sdata[7]) * 1.852  # Convert knots to km/h
+        
+            return speed
+        
+        print("Connecting Port..")
+        try:
+            serw = serial.Serial(portwrite, baudrate=115200, timeout=1, rtscts=True, dsrdtr=True)
+            
+            # Enable GPS
+            serw.write('AT+QGPS=1\r'.encode())
+            response = serw.readline().decode('utf-8')
+            print("Modem Response for AT+QGPS=1:", response.strip())    
+            serw.close()
+            
+        except Exception as e: 
+            print("Serial port connection failed.")
+            print(e)
+        
+        print("Receiving GPS data\n")
+        ser = serial.Serial(port, baudrate=115200, timeout=0.5, rtscts=True, dsrdtr=True)
+        speed = None
+        while True:
+            data = ser.readline().decode('utf-8')
+            print("Raw Data:", data)  
+            speed = parseGPS(data, speed)
+            sleep(1)
+
+
+
+  
+        
+                '></iframe>
+
+
+            </div>
+            <div class="tab-pane" id="code-breadcrumb">
+              <div class="position-relative p-4 pb-2">
+                <a class="btn btn-sm bg-gradient-dark position-absolute end-4 mt-3" onclick="copyCode(this);" type="button"><i class="fas fa-copy text-sm me-1"></i> Copy</a>
+                <figure class="highlight"><pre><code class="language-html" data-lang="html">
+                        
+                
+                    import psycopg2
+                    from time import sleep
+                    import serial
+                    
+                    # Database Configuration
+                    conn = psycopg2.connect(
+                        dbname="qdb",
+                        user="admin",
+                        password="quest",
+                        host="docker_host_ip_address",
+                        port="8812"
+                    )
+                    
+                    # Create table if it doesn't exist
+                    with conn:
+                        cursor = conn.cursor()
+                        cursor.execute("CREATE TABLE IF NOT EXISTS gps_data (latitude DOUBLE, longitude DOUBLE, altitude DOUBLE, speed DOUBLE, timestamp TIMESTAMP) TIMESTAMP(timestamp) PARTITION BY DAY;")
+                    
+                    # Serial Configuration
+                    portwrite = "/dev/ttyUSB2"
+                    port = "/dev/ttyUSB1"
+                    
+                    def parseGPS(data, speed=None):
+                        if data[0:6] == "$GPGGA":
+                            sdata = data.split(",")
+                            time = sdata[1]
+                            lat = sdata[2]
+                            dirLat = sdata[3]
+                            lon = sdata[4]
+                            dirLon = sdata[5]
+                            altitude = sdata[9]
+                    
+                            latitude = float(lat[:2]) + float(lat[2:])/60
+                            if dirLat == 'S':
+                                latitude = -latitude
+                    
+                            longitude = float(lon[:3]) + float(lon[3:])/60
+                            if dirLon == 'W':
+                                longitude = -longitude
+                    
+                            altitude = float(altitude)
+                    
+                            with conn:
+                                cursor = conn.cursor()
+                                cursor.execute("INSERT INTO gps_data (latitude, longitude, altitude, speed, timestamp) VALUES (%s, %s, %s, %s, NOW());",
+                                               (latitude, longitude, altitude, speed))
+                    
+                        elif data[0:6] == "$GPRMC":
+                            sdata = data.split(",")
+                            speed = float(sdata[7]) * 1.852  # Convert knots to km/h
+                    
+                        return speed
+                    
+                    print("Connecting Port..")
+                    try:
+                        serw = serial.Serial(portwrite, baudrate=115200, timeout=1, rtscts=True, dsrdtr=True)
+                        
+                        # Enable GPS
+                        serw.write('AT+QGPS=1\r'.encode())
+                        response = serw.readline().decode('utf-8')
+                        print("Modem Response for AT+QGPS=1:", response.strip())    
+                        serw.close()
+                        
+                    except Exception as e: 
+                        print("Serial port connection failed.")
+                        print(e)
+                    
+                    print("Receiving GPS data\n")
+                    ser = serial.Serial(port, baudrate=115200, timeout=0.5, rtscts=True, dsrdtr=True)
+                    speed = None
+                    while True:
+                        data = ser.readline().decode('utf-8')
+                        print("Raw Data:", data)  
+                        speed = parseGPS(data, speed)
+                        sleep(1)
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                </code></pre>
+                </figure>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE --> 
+{% block javascripts %}
+
+  <script src="/static/assets/js/soft-design-system.min.js?v=1.0.1" type="text/javascript"></script>
+
+{% endblock javascripts %}
