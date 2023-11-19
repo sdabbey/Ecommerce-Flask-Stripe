@@ -121,8 +121,7 @@ while True:
                 INSERT INTO coinbase_matches (symbol, id, price, size, side, type, maker_order_id, taker_order_id, sequence, timestamp)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
                 """
-            cursor.execute(insert_query, (data[&#39;product_id&#39;], data[&#39;trade_id&#39;], float(data[&#39;price&#39;]), float(data['size']), data['side'], data['type'], data['maker_order_id'], data['taker_order_id'], data['sequence'], data['time']))
-            conn.commit()
+            cursor.execute(insert_query, (data[&#39;product_id&#39;], data[&#39;trade_id&#39;], float(data[&#39;price&#39;]), float(data[&#39;size&#39;]), data[&#39;side&#39;], data[&#39;type&#39;], data[&#39;maker_order_id&#39;], data[&#39;taker_order_id&#39;], data[&#39;sequence&#39;], data[&#39;time&#39;]))        conn.commit()
 
     except WebSocketConnectionClosedException:
         print("Connection closed, retrying...")
