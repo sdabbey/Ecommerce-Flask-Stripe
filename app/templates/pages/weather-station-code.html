@@ -21,7 +21,7 @@
               <li class="breadcrumb-item active" aria-current="page">Python Code</li>
             </ol>
           </nav>
-          <h4>Data Stream Processing</h4>
+          <h5>Data Stream Processing</h5>
         </div>
         <div class="position-relative border-radius-xl overflow-hidden shadow-lg mb-7">
           <div class="container border-bottom">
@@ -81,7 +81,7 @@
   
   """)
   
-  # Connect to the PostgreSQL database
+  # Connect to the QuestDB database
   conn = psycopg2.connect(
       dbname="qdb",
       user="admin",
@@ -222,7 +222,7 @@
                     
                     """)
                     
-                    # Connect to the PostgreSQL database
+                    # Connect to the QuestDB database
                     conn = psycopg2.connect(
                         dbname="qdb",
                         user="admin",
