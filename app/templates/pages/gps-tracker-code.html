@@ -78,7 +78,7 @@
             port="8812"
         )
         
-        # Create table if it doesn't exist
+        # Create table if it does not exist
         with conn:
             cursor = conn.cursor()
             cursor.execute("CREATE TABLE IF NOT EXISTS gps_data (latitude DOUBLE, longitude DOUBLE, altitude DOUBLE, speed DOUBLE, timestamp TIMESTAMP) TIMESTAMP(timestamp) PARTITION BY DAY;")
@@ -98,11 +98,11 @@
                 altitude = sdata[9]
         
                 latitude = float(lat[:2]) + float(lat[2:])/60
-                if dirLat == 'S':
+                if dirLat == &#39;S&#39;:
                     latitude = -latitude
         
                 longitude = float(lon[:3]) + float(lon[3:])/60
-                if dirLon == 'W':
+                if dirLon == &#39;W&#39;:
                     longitude = -longitude
         
                 altitude = float(altitude)
@@ -123,8 +123,8 @@
             serw = serial.Serial(portwrite, baudrate=115200, timeout=1, rtscts=True, dsrdtr=True)
             
             # Enable GPS
-            serw.write('AT+QGPS=1\r'.encode())
-            response = serw.readline().decode('utf-8')
+            serw.write(&#39;AT+QGPS=1\r&#39;.encode())
+            response = serw.readline().decode(&#39;utf-8&#39;)
             print("Modem Response for AT+QGPS=1:", response.strip())    
             serw.close()
             
@@ -136,7 +136,7 @@
         ser = serial.Serial(port, baudrate=115200, timeout=0.5, rtscts=True, dsrdtr=True)
         speed = None
         while True:
-            data = ser.readline().decode('utf-8')
+            data = ser.readline().decode(&#39;utf-8&#39;)
             print("Raw Data:", data)  
             speed = parseGPS(data, speed)
             sleep(1)

@@ -111,8 +111,8 @@ while True:
     try:
         data = json.loads(ws.recv())
         
-        # If the message type is 'subscriptions', skip it
-        if data.get('type') == 'subscriptions':
+        # If the message type is &#39;subscriptions&#39;, skip it
+        if data.get(&#39;type&#39;) == &#39;subscriptions&#39;:
             continue
         
         with conn:
@@ -121,7 +121,7 @@ while True:
                 INSERT INTO coinbase_matches (symbol, id, price, size, side, type, maker_order_id, taker_order_id, sequence, timestamp)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
                 """
-            cursor.execute(insert_query, (data['product_id'], data['trade_id'], float(data['price']), float(data['size']), data['side'], data['type'], data['maker_order_id'], data['taker_order_id'], data['sequence'], data['time']))
+            cursor.execute(insert_query, (data[&#39;product_id&#39;], data[&#39;trade_id&#39;], float(data[&#39;price&#39;]), float(data['size']), data['side'], data['type'], data['maker_order_id'], data['taker_order_id'], data['sequence'], data['time']))
             conn.commit()
 
     except WebSocketConnectionClosedException:
