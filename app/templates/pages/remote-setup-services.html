@@ -1,9 +1,15 @@
-{% extends 'layouts/base-fullscreen.html' %}
+{% extends 'layouts/base.html' %}
 
+{% block title %} Author {% endblock title %}
 
-{% block body %}privacy{% endblock body %}
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block body_class %} blog-author bg-gray-100 {% endblock body_class %}
 
 {% block content %}
+
+  {% include "includes/navigation-light.html" %}
 
   <section class="pt-3 pt-md-5 pb-md-5 pt-lg-7 bg-gray-200">
     <div class="container">
@@ -55,8 +61,12 @@
     </div>
   </section>
 
-{% endblock content %}
+  {% endblock content %}
 
-{% block footer %}
-  {% include 'includes/footer.html' %}
-{% endblock footer %}
+  <!-- Specific JS goes HERE --> 
+  {% block javascripts %}
+  
+    <script src="/static/assets/js/soft-design-system.min.js?v=1.0.1" type="text/javascript"></script>
+  
+  {% endblock javascripts %}
+  
