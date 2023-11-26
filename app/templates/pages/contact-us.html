@@ -11,6 +11,15 @@
 
   {% include "includes/navigation-light.html" %}
 
+
+  <!-- In your form section -->
+{{ form.hidden_tag() }}
+{{ form.name.label }} {{ form.name(class="form-control") }}
+{{ form.details.label }} {{ form.details(class="form-control") }}
+{{ form.message.label }} {{ form.message(class="form-control") }}
+<!-- Add other form fields as needed -->
+
+
   <section class="py-sm-7 py-5 position-relative">
     <div class="container">
       <div class="row">

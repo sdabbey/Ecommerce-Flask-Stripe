@@ -2,11 +2,22 @@
 """
 Copyright (c) 2019 - present AppSeed.us
 """
-
+import flask_wtf
 import os, json
 import base64
 import sqlite3
 import sqlite3 as sql
+
+# Flask Contact form
+from flask_wtf import FlaskForm
+from wtforms import StringField, TextAreaField
+from wtforms.validators import DataRequired
+
+class ContactForm(FlaskForm):
+    name = StringField('Name', validators=[DataRequired()])
+    details = StringField('Details', validators=[DataRequired()])
+    message = TextAreaField('Message', validators=[DataRequired()])
+
 
 # Flask modules
 from flask   import render_template, request, jsonify, redirect, g, url_for
@@ -31,6 +42,30 @@ stripe_keys = {
 } 
 
 stripe.api_key = stripe_keys["secret_key"]
+
+
+
+
+###############################################
+# CONTACT
+
+
+@app.route('/contact', methods=['GET', 'POST'])
+def contact():
+    form = ContactForm()
+    if form.validate_on_submit():
+        # Process form data
+        name = form.name.data
+        details = form.details.data
+        message = form.message.data
+        
+        # Implement your email sending logic here
+
+        flash('Your message has been sent successfully!', 'success')
+        return redirect('/contact')
+    return render_template('contact-us.html', form=form)
+
+
 
 ###############################################
 # AUTH 
