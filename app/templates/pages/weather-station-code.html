@@ -18,10 +18,10 @@
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
               <li class="breadcrumb-item"><a href="/presentation.html">Weather Station</a></li>
-              <li class="breadcrumb-item active" aria-current="page">Python Code</li>
+              <li class="breadcrumb-item active" aria-current="page">Preview Code</li>
             </ol>
           </nav>
-          <h4>Data Stream Processing</h4>
+          <h4>Data Stream Processing and Dashboard Visualization</h4>
         </div>
 
 
@@ -349,7 +349,7 @@
           <div class="container border-bottom">
             <div class="row justify-space-between py-2">
               <div class="col-lg-3 me-auto">
-                <p class="lead text-dark pt-1 mb-0">data-stream-processing.py</p>
+                <p class="lead text-dark pt-1 mb-0">dashboard-weather-station.json</p>
               </div>
               <div class="col-lg-3">
                 <div class="nav-wrapper position-relative end-0">
@@ -384,137 +384,1071 @@
     </head>
     <body>
       
-      <pre><code class="language-python" >             
+      <pre><code class="language-json" >             
 
-#!/usr/bin/env python
-
-  import bme680
-  from datetime import datetime
-  import time
-  import psycopg2
-  
-  print("""
-  
-  Runs the sensor for a burn-in period, then uses a
-  combination of relative humidity and gas resistance
-  to estimate indoor air quality as a percentage.
-  
-  Press Ctrl+C to exit!
-  
-  """)
-  
-  # Connect to the QuestDB database
-  conn = psycopg2.connect(
-      dbname="qdb",
-      user="admin",
-      password="quest",
-      host="docker_host_ip_address",
-      port="8812"
-  )
-  
-  # Create the necessary table if it does not exist
-  with conn:
-      cursor = conn.cursor()
-      cursor.execute("CREATE TABLE  IF NOT EXISTS weather_data (temperature DOUBLE, humidity DOUBLE, pressure DOUBLE, gas_resistance DOUBLE, iaq DOUBLE, timestamp TIMESTAMP) TIMESTAMP(timestamp) PARTITION BY DAY;")
-  
-  
-  # Initialize the BME680 sensor
-  # These oversampling settings can be tweaked to
-  # change the balance between accuracy and noise in
-  # the data.
-  
-  try:
-      sensor = bme680.BME680(bme680.I2C_ADDR_PRIMARY)
-  except (RuntimeError, IOError):
-      sensor = bme680.BME680(bme680.I2C_ADDR_SECONDARY)
-  
-  # Configuration for the BME680 sensor
-  # These oversampling settings can be tweaked to
-  # change the balance between accuracy and noise in
-  # the data.
-  sensor.set_humidity_oversample(bme680.OS_2X)
-  sensor.set_pressure_oversample(bme680.OS_4X)
-  sensor.set_temperature_oversample(bme680.OS_8X)
-  sensor.set_filter(bme680.FILTER_SIZE_3)
-  sensor.set_gas_status(bme680.ENABLE_GAS_MEAS)
-  sensor.set_gas_heater_temperature(320)
-  sensor.set_gas_heater_duration(150)
-  sensor.select_gas_heater_profile(0)
-  
-  # Collect burn-in data for gas sensor
-  # start_time and curr_time ensure that the
-  # burn_in_time (in seconds) is kept track of.
-  
-  start_time = time.time()
-  curr_time = time.time()
-  burn_in_time = 290
-  burn_in_data = []
-  
-      # Collect gas resistance burn-in values, then use the average
-      # of the last 50 values to set the upper limit for calculating
-      # gas_baseline.
-  
-  print(&#39;Collecting gas resistance burn-in data for 5 mins\n&#39;)
-  
-  while curr_time - start_time < burn_in_time:
-      curr_time = time.time()
-      if sensor.get_sensor_data() and sensor.data.heat_stable:
-          gas = sensor.data.gas_resistance
-          burn_in_data.append(gas)
-          print(&#39;Gas: {0} Ohms&#39;.format(gas))
-          time.sleep(1)
-  
-  gas_baseline = sum(burn_in_data[-50:]) / 50.0
-  
-  # Set the humidity baseline to 40%, an optimal indoor humidity
-  hum_baseline = 40.0
-  
-    # This sets the balance between humidity and gas reading in the
-  # calculation of air_quality_score (25:75, humidity:gas)
-  hum_weighting = 0.25
-  
-  print(&#39;Gas baseline: {0} Ohms, humidity baseline: {1:.2f} %RH\n&#39;.format(
-          gas_baseline,
-          hum_baseline))
-  
-  # Collect and process data indefinitely
-  while True:
-      if sensor.get_sensor_data() and sensor.data.heat_stable:
-          temperature = sensor.data.temperature
-          humidity = sensor.data.humidity
-          pressure = sensor.data.pressure
-          gas_resistance = sensor.data.gas_resistance 
-          timestamp = datetime.now()
-  
-          
-          gas_offset = gas_baseline - gas_resistance
-          hum_offset = humidity - hum_baseline
-  
-      # Calculate hum_score as the distance from the hum_baseline.
-          if hum_offset > 0:
-              hum_score = (100 - hum_baseline - hum_offset) / (100 - hum_baseline) * (hum_weighting * 100)
-          else:
-              hum_score = (hum_baseline + hum_offset) / hum_baseline * (hum_weighting * 100)
-      
-      # Calculate gas_score as the distance from the gas_baseline.
-          if gas_offset > 0:
-              gas_score = (gas_resistance / gas_baseline) * (100 - (hum_weighting * 100))
-          else:
-              gas_score = 100 - (hum_weighting * 100)
-  
-          # Calculate air_quality_score.
-          iaq = hum_score + gas_score
-  
-          # Insert data into the database
-          with conn:
-              cursor = conn.cursor()
-              # Insert sensor data into the table
-              insert_query = "INSERT INTO weather_data (temperature, humidity, pressure, gas_resistance, iaq, timestamp) VALUES (%s, %s, %s, %s, %s, %s);"
-              cursor.execute(insert_query, (temperature, humidity, pressure, gas_resistance, iaq, timestamp))
-  
-          print("Sensor data inserted:", temperature, humidity, pressure, gas_resistance, iaq, timestamp)
-        
-          time.sleep(60)  # Wait for 60 seconds before next reading
+        {
+          "annotations": {
+            "list": [
+              {
+                "builtIn": 1,
+                "datasource": {
+                  "type": "grafana",
+                  "uid": "-- Grafana --"
+                },
+                "enable": true,
+                "hide": true,
+                "iconColor": "rgba(0, 211, 255, 1)",
+                "name": "Annotations & Alerts",
+                "type": "dashboard"
+              }
+            ]
+          },
+          "description": "Weather Station Template for BME680  Sensor.",
+          "editable": true,
+          "fiscalYearStartMonth": 0,
+          "graphTooltip": 0,
+          "id": 3,
+          "links": [],
+          "liveNow": true,
+          "panels": [
+            {
+              "datasource": {
+                "type": "postgres",
+                "uid": "2Bi8EToVz"
+              },
+              "description": "",
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "thresholds"
+                  },
+                  "mappings": [
+                    {
+                      "options": {
+                        "from": 0,
+                        "result": {
+                          "text": "Good"
+                        },
+                        "to": 50
+                      },
+                      "type": "range"
+                    },
+                    {
+                      "options": {
+                        "from": 51,
+                        "result": {
+                          "text": "Moderate"
+                        },
+                        "to": 100
+                      },
+                      "type": "range"
+                    },
+                    {
+                      "options": {
+                        "from": 101,
+                        "result": {
+                          "text": "Unhealthy for sensitive groups"
+                        },
+                        "to": 150
+                      },
+                      "type": "range"
+                    },
+                    {
+                      "options": {
+                        "from": 151,
+                        "result": {
+                          "text": "Unhealthy"
+                        },
+                        "to": 200
+                      },
+                      "type": "range"
+                    },
+                    {
+                      "options": {
+                        "from": 201,
+                        "result": {
+                          "text": "Very Unhealthy"
+                        },
+                        "to": 250
+                      },
+                      "type": "range"
+                    },
+                    {
+                      "options": {
+                        "from": 251,
+                        "result": {
+                          "text": "Hazardous"
+                        },
+                        "to": 350
+                      },
+                      "type": "range"
+                    }
+                  ],
+                  "max": 400,
+                  "min": 0,
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green",
+                        "value": null
+                      },
+                      {
+                        "color": "yellow",
+                        "value": 51
+                      },
+                      {
+                        "color": "orange",
+                        "value": 101
+                      },
+                      {
+                        "color": "red",
+                        "value": 151
+                      },
+                      {
+                        "color": "red",
+                        "value": 201
+                      },
+                      {
+                        "color": "purple",
+                        "value": 251
+                      },
+                      {
+                        "color": "darkred",
+                        "value": 301
+                      }
+                    ]
+                  }
+                },
+                "overrides": []
+              },
+              "gridPos": {
+                "h": 10,
+                "w": 5,
+                "x": 0,
+                "y": 0
+              },
+              "id": 9,
+              "options": {
+                "orientation": "auto",
+                "reduceOptions": {
+                  "calcs": [
+                    "lastNotNull"
+                  ],
+                  "fields": "",
+                  "values": false
+                },
+                "showThresholdLabels": false,
+                "showThresholdMarkers": true,
+                "text": {
+                  "titleSize": 45
+                }
+              },
+              "pluginVersion": "9.5.1",
+              "targets": [
+                {
+                  "datasource": {
+                    "type": "postgres",
+                    "uid": "2Bi8EToVz"
+                  },
+                  "editorMode": "code",
+                  "format": "table",
+                  "rawQuery": true,
+                  "rawSql": "SELECT\r\ntimestamp,\r\niaq\r\nFROM  weather_data\r\n",
+                  "refId": "A",
+                  "sql": {
+                    "columns": [
+                      {
+                        "parameters": [],
+                        "type": "function"
+                      }
+                    ],
+                    "groupBy": [
+                      {
+                        "property": {
+                          "type": "string"
+                        },
+                        "type": "groupBy"
+                      }
+                    ],
+                    "limit": 50
+                  }
+                }
+              ],
+              "title": "Indoor Air Quality (IAQ) Classification",
+              "type": "gauge"
+            },
+            {
+              "datasource": {
+                "type": "postgres",
+                "uid": "2Bi8EToVz"
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "palette-classic"
+                  },
+                  "custom": {
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
+                    "axisLabel": "",
+                    "axisPlacement": "auto",
+                    "barAlignment": 0,
+                    "drawStyle": "line",
+                    "fillOpacity": 10,
+                    "gradientMode": "none",
+                    "hideFrom": {
+                      "legend": false,
+                      "tooltip": false,
+                      "viz": false
+                    },
+                    "lineInterpolation": "linear",
+                    "lineWidth": 1,
+                    "pointSize": 5,
+                    "scaleDistribution": {
+                      "type": "linear"
+                    },
+                    "showPoints": "auto",
+                    "spanNulls": false,
+                    "stacking": {
+                      "group": "A",
+                      "mode": "none"
+                    },
+                    "thresholdsStyle": {
+                      "mode": "off"
+                    }
+                  },
+                  "mappings": [],
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green",
+                        "value": null
+                      },
+                      {
+                        "color": "red",
+                        "value": 80
+                      }
+                    ]
+                  }
+                },
+                "overrides": []
+              },
+              "gridPos": {
+                "h": 10,
+                "w": 7,
+                "x": 5,
+                "y": 0
+              },
+              "id": 2,
+              "options": {
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "list",
+                  "placement": "bottom",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
+              "targets": [
+                {
+                  "datasource": {
+                    "type": "postgres",
+                    "uid": "2Bi8EToVz"
+                  },
+                  "editorMode": "code",
+                  "format": "table",
+                  "rawQuery": true,
+                  "rawSql": "SELECT\r\ntimestamp,\r\niaq\r\nFROM  weather_data",
+                  "refId": "A",
+                  "sql": {
+                    "columns": [],
+                    "groupBy": [
+                      {
+                        "property": {
+                          "type": "string"
+                        },
+                        "type": "groupBy"
+                      }
+                    ],
+                    "limit": 50
+                  }
+                }
+              ],
+              "title": "Indoor Air Quality (IAQ)  Rating",
+              "type": "timeseries"
+            },
+            {
+              "datasource": {
+                "type": "postgres",
+                "uid": "2Bi8EToVz"
+              },
+              "description": "",
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "thresholds"
+                  },
+                  "mappings": [
+                    {
+                      "options": {
+                        "from": 35,
+                        "result": {
+                          "index": 0,
+                          "text": "Very Hot"
+                        },
+                        "to": 45
+                      },
+                      "type": "range"
+                    },
+                    {
+                      "options": {
+                        "from": 27,
+                        "result": {
+                          "index": 1,
+                          "text": "Hot   "
+                        },
+                        "to": 35
+                      },
+                      "type": "range"
+                    },
+                    {
+                      "options": {
+                        "from": 20,
+                        "result": {
+                          "index": 2,
+                          "text": "Good"
+                        },
+                        "to": 27
+                      },
+                      "type": "range"
+                    },
+                    {
+                      "options": {
+                        "from": 10,
+                        "result": {
+                          "index": 3,
+                          "text": "Cold"
+                        },
+                        "to": 20
+                      },
+                      "type": "range"
+                    },
+                    {
+                      "options": {
+                        "from": 0,
+                        "result": {
+                          "index": 4,
+                          "text": "Very Cold"
+                        },
+                        "to": 10
+                      },
+                      "type": "range"
+                    }
+                  ],
+                  "max": 45,
+                  "min": 0,
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "dark-blue",
+                        "value": null
+                      },
+                      {
+                        "color": "light-blue",
+                        "value": 10
+                      },
+                      {
+                        "color": "green",
+                        "value": 20
+                      },
+                      {
+                        "color": "orange",
+                        "value": 27
+                      },
+                      {
+                        "color": "red",
+                        "value": 35
+                      }
+                    ]
+                  }
+                },
+                "overrides": []
+              },
+              "gridPos": {
+                "h": 5,
+                "w": 4,
+                "x": 12,
+                "y": 0
+              },
+              "id": 4,
+              "options": {
+                "orientation": "auto",
+                "reduceOptions": {
+                  "calcs": [
+                    "lastNotNull"
+                  ],
+                  "fields": "",
+                  "values": false
+                },
+                "showThresholdLabels": false,
+                "showThresholdMarkers": true,
+                "text": {}
+              },
+              "pluginVersion": "9.5.1",
+              "targets": [
+                {
+                  "datasource": {
+                    "type": "postgres",
+                    "uid": "2Bi8EToVz"
+                  },
+                  "editorMode": "code",
+                  "format": "table",
+                  "rawQuery": true,
+                  "rawSql": "SELECT\r\ntimestamp,\r\ntemperature\r\nFROM  weather_data\r\nWHERE timestamp > dateadd('d', -1, now())",
+                  "refId": "A",
+                  "sql": {
+                    "columns": [
+                      {
+                        "parameters": [],
+                        "type": "function"
+                      }
+                    ],
+                    "groupBy": [
+                      {
+                        "property": {
+                          "type": "string"
+                        },
+                        "type": "groupBy"
+                      }
+                    ],
+                    "limit": 50
+                  }
+                }
+              ],
+              "title": "Temperature",
+              "type": "gauge"
+            },
+            {
+              "datasource": {
+                "type": "postgres",
+                "uid": "2Bi8EToVz"
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "palette-classic"
+                  },
+                  "custom": {
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
+                    "axisLabel": "° Celsius",
+                    "axisPlacement": "auto",
+                    "barAlignment": 0,
+                    "drawStyle": "line",
+                    "fillOpacity": 10,
+                    "gradientMode": "none",
+                    "hideFrom": {
+                      "legend": false,
+                      "tooltip": false,
+                      "viz": false
+                    },
+                    "lineInterpolation": "linear",
+                    "lineStyle": {
+                      "fill": "solid"
+                    },
+                    "lineWidth": 1,
+                    "pointSize": 5,
+                    "scaleDistribution": {
+                      "type": "linear"
+                    },
+                    "showPoints": "auto",
+                    "spanNulls": false,
+                    "stacking": {
+                      "group": "A",
+                      "mode": "none"
+                    },
+                    "thresholdsStyle": {
+                      "mode": "off"
+                    }
+                  },
+                  "mappings": [],
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green",
+                        "value": null
+                      },
+                      {
+                        "color": "red",
+                        "value": 80
+                      }
+                    ]
+                  }
+                },
+                "overrides": []
+              },
+              "gridPos": {
+                "h": 5,
+                "w": 8,
+                "x": 16,
+                "y": 0
+              },
+              "id": 6,
+              "options": {
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "list",
+                  "placement": "bottom",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
+              "targets": [
+                {
+                  "datasource": {
+                    "type": "postgres",
+                    "uid": "2Bi8EToVz"
+                  },
+                  "editorMode": "code",
+                  "format": "table",
+                  "rawQuery": true,
+                  "rawSql": "SELECT\r\ntimestamp,\r\ntemperature\r\nFROM  weather_data\r\nWHERE timestamp > dateadd('d', -1, now())",
+                  "refId": "A",
+                  "sql": {
+                    "columns": [
+                      {
+                        "parameters": [],
+                        "type": "function"
+                      }
+                    ],
+                    "groupBy": [
+                      {
+                        "property": {
+                          "type": "string"
+                        },
+                        "type": "groupBy"
+                      }
+                    ],
+                    "limit": 50
+                  }
+                }
+              ],
+              "title": "Temperature",
+              "type": "timeseries"
+            },
+            {
+              "datasource": {
+                "type": "postgres",
+                "uid": "2Bi8EToVz"
+              },
+              "description": "",
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "thresholds"
+                  },
+                  "mappings": [
+                    {
+                      "options": {
+                        "from": 0,
+                        "result": {
+                          "text": "Very Dry"
+                        },
+                        "to": 30
+                      },
+                      "type": "range"
+                    },
+                    {
+                      "options": {
+                        "from": 30,
+                        "result": {
+                          "text": "Good"
+                        },
+                        "to": 60
+                      },
+                      "type": "range"
+                    },
+                    {
+                      "options": {
+                        "from": 60,
+                        "result": {
+                          "text": "Humid"
+                        },
+                        "to": 80
+                      },
+                      "type": "range"
+                    },
+                    {
+                      "options": {
+                        "from": 80,
+                        "result": {
+                          "text": "Very Humid"
+                        },
+                        "to": 100
+                      },
+                      "type": "range"
+                    }
+                  ],
+                  "max": 100,
+                  "min": 0,
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "blue",
+                        "value": null
+                      },
+                      {
+                        "color": "green",
+                        "value": 30
+                      },
+                      {
+                        "color": "yellow",
+                        "value": 60
+                      },
+                      {
+                        "color": "red",
+                        "value": 80
+                      }
+                    ]
+                  }
+                },
+                "overrides": []
+              },
+              "gridPos": {
+                "h": 5,
+                "w": 4,
+                "x": 12,
+                "y": 5
+              },
+              "id": 3,
+              "options": {
+                "orientation": "auto",
+                "reduceOptions": {
+                  "calcs": [
+                    "lastNotNull"
+                  ],
+                  "fields": "",
+                  "values": false
+                },
+                "showThresholdLabels": false,
+                "showThresholdMarkers": true,
+                "text": {
+                  "titleSize": 0
+                }
+              },
+              "pluginVersion": "9.5.1",
+              "targets": [
+                {
+                  "datasource": {
+                    "type": "postgres",
+                    "uid": "2Bi8EToVz"
+                  },
+                  "editorMode": "code",
+                  "format": "table",
+                  "rawQuery": true,
+                  "rawSql": "SELECT\r\ntimestamp,\r\nhumidity\r\nFROM  weather_data\r\nWHERE timestamp > dateadd('d', -1, now())",
+                  "refId": "A",
+                  "sql": {
+                    "columns": [
+                      {
+                        "parameters": [],
+                        "type": "function"
+                      }
+                    ],
+                    "groupBy": [
+                      {
+                        "property": {
+                          "type": "string"
+                        },
+                        "type": "groupBy"
+                      }
+                    ],
+                    "limit": 50
+                  }
+                }
+              ],
+              "title": "Humidity",
+              "type": "gauge"
+            },
+            {
+              "datasource": {
+                "type": "postgres",
+                "uid": "2Bi8EToVz"
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "palette-classic"
+                  },
+                  "custom": {
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
+                    "axisLabel": "% Percentage",
+                    "axisPlacement": "auto",
+                    "barAlignment": 0,
+                    "drawStyle": "line",
+                    "fillOpacity": 10,
+                    "gradientMode": "none",
+                    "hideFrom": {
+                      "legend": false,
+                      "tooltip": false,
+                      "viz": false
+                    },
+                    "lineInterpolation": "linear",
+                    "lineWidth": 1,
+                    "pointSize": 5,
+                    "scaleDistribution": {
+                      "type": "linear"
+                    },
+                    "showPoints": "auto",
+                    "spanNulls": false,
+                    "stacking": {
+                      "group": "A",
+                      "mode": "none"
+                    },
+                    "thresholdsStyle": {
+                      "mode": "off"
+                    }
+                  },
+                  "mappings": [],
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green",
+                        "value": null
+                      },
+                      {
+                        "color": "red",
+                        "value": 80
+                      }
+                    ]
+                  }
+                },
+                "overrides": []
+              },
+              "gridPos": {
+                "h": 5,
+                "w": 8,
+                "x": 16,
+                "y": 5
+              },
+              "id": 5,
+              "options": {
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "list",
+                  "placement": "bottom",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
+              "targets": [
+                {
+                  "datasource": {
+                    "type": "postgres",
+                    "uid": "2Bi8EToVz"
+                  },
+                  "editorMode": "code",
+                  "format": "table",
+                  "rawQuery": true,
+                  "rawSql": "SELECT\r\ntimestamp,\r\nhumidity\r\nFROM  weather_data\r\nWHERE timestamp > dateadd('d', -1, now())",
+                  "refId": "A",
+                  "sql": {
+                    "columns": [
+                      {
+                        "parameters": [],
+                        "type": "function"
+                      }
+                    ],
+                    "groupBy": [
+                      {
+                        "property": {
+                          "type": "string"
+                        },
+                        "type": "groupBy"
+                      }
+                    ],
+                    "limit": 50
+                  }
+                }
+              ],
+              "title": "Humidity",
+              "type": "timeseries"
+            },
+            {
+              "datasource": {
+                "type": "postgres",
+                "uid": "2Bi8EToVz"
+              },
+              "description": "",
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "thresholds"
+                  },
+                  "mappings": [
+                    {
+                      "options": {
+                        "from": 950,
+                        "result": {
+                          "text": "Very Low"
+                        },
+                        "to": 980
+                      },
+                      "type": "range"
+                    },
+                    {
+                      "options": {
+                        "from": 980,
+                        "result": {
+                          "text": "Low     "
+                        },
+                        "to": 1000
+                      },
+                      "type": "range"
+                    },
+                    {
+                      "options": {
+                        "from": 1000,
+                        "result": {
+                          "text": "Normal"
+                        },
+                        "to": 1025
+                      },
+                      "type": "range"
+                    },
+                    {
+                      "options": {
+                        "from": 1025,
+                        "result": {
+                          "text": "High"
+                        },
+                        "to": 1050
+                      },
+                      "type": "range"
+                    }
+                  ],
+                  "max": 1050,
+                  "min": 950,
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "red",
+                        "value": null
+                      },
+                      {
+                        "color": "yellow",
+                        "value": 980
+                      },
+                      {
+                        "color": "green",
+                        "value": 1000
+                      },
+                      {
+                        "color": "blue",
+                        "value": 1025
+                      }
+                    ]
+                  }
+                },
+                "overrides": []
+              },
+              "gridPos": {
+                "h": 8,
+                "w": 5,
+                "x": 0,
+                "y": 10
+              },
+              "id": 7,
+              "options": {
+                "orientation": "auto",
+                "reduceOptions": {
+                  "calcs": [
+                    "lastNotNull"
+                  ],
+                  "fields": "",
+                  "values": false
+                },
+                "showThresholdLabels": false,
+                "showThresholdMarkers": true,
+                "text": {}
+              },
+              "pluginVersion": "9.5.1",
+              "targets": [
+                {
+                  "datasource": {
+                    "type": "postgres",
+                    "uid": "2Bi8EToVz"
+                  },
+                  "editorMode": "code",
+                  "format": "table",
+                  "rawQuery": true,
+                  "rawSql": "SELECT\r\ntimestamp,\r\npressure\r\nFROM  weather_data\r\nWHERE timestamp > dateadd('d', -1, now())",
+                  "refId": "A",
+                  "sql": {
+                    "columns": [],
+                    "groupBy": [
+                      {
+                        "property": {
+                          "type": "string"
+                        },
+                        "type": "groupBy"
+                      }
+                    ],
+                    "limit": 50
+                  }
+                }
+              ],
+              "title": "Pressure",
+              "type": "gauge"
+            },
+            {
+              "datasource": {
+                "type": "postgres",
+                "uid": "2Bi8EToVz"
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "palette-classic"
+                  },
+                  "custom": {
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
+                    "axisLabel": "Millibars",
+                    "axisPlacement": "auto",
+                    "barAlignment": 0,
+                    "drawStyle": "line",
+                    "fillOpacity": 10,
+                    "gradientMode": "none",
+                    "hideFrom": {
+                      "legend": false,
+                      "tooltip": false,
+                      "viz": false
+                    },
+                    "lineInterpolation": "linear",
+                    "lineWidth": 1,
+                    "pointSize": 5,
+                    "scaleDistribution": {
+                      "type": "linear"
+                    },
+                    "showPoints": "auto",
+                    "spanNulls": false,
+                    "stacking": {
+                      "group": "A",
+                      "mode": "none"
+                    },
+                    "thresholdsStyle": {
+                      "mode": "off"
+                    }
+                  },
+                  "mappings": [],
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green",
+                        "value": null
+                      },
+                      {
+                        "color": "red",
+                        "value": 80
+                      }
+                    ]
+                  }
+                },
+                "overrides": []
+              },
+              "gridPos": {
+                "h": 8,
+                "w": 19,
+                "x": 5,
+                "y": 10
+              },
+              "id": 8,
+              "options": {
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "list",
+                  "placement": "bottom",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
+              "targets": [
+                {
+                  "datasource": {
+                    "type": "postgres",
+                    "uid": "2Bi8EToVz"
+                  },
+                  "editorMode": "code",
+                  "format": "table",
+                  "rawQuery": true,
+                  "rawSql": "SELECT\r\ntimestamp,\r\npressure\r\nFROM  weather_data\r\nWHERE timestamp > dateadd('d', -1, now())",
+                  "refId": "A",
+                  "sql": {
+                    "columns": [
+                      {
+                        "parameters": [],
+                        "type": "function"
+                      }
+                    ],
+                    "groupBy": [
+                      {
+                        "property": {
+                          "type": "string"
+                        },
+                        "type": "groupBy"
+                      }
+                    ],
+                    "limit": 50
+                  }
+                }
+              ],
+              "title": "Pressure",
+              "type": "timeseries"
+            }
+          ],
+          "refresh": "1m",
+          "schemaVersion": 38,
+          "style": "dark",
+          "tags": [
+            "Weather Station",
+            "BME680"
+          ],
+          "templating": {
+            "list": []
+          },
+          "time": {
+            "from": "now-24h",
+            "to": "now"
+          },
+          "timepicker": {},
+          "timezone": "",
+          "title": "Weather Station Template BME680",
+          "uid": "d6dcc3ec-ef11-4d34-9fd3-bd8042ccf350",
+          "version": 71,
+          "weekStart": ""
+        }
 
         </code></pre>
         </body></html>
@@ -527,135 +1461,2138 @@
             <div class="tab-pane" id="code-breadcrumb">
               <div class="position-relative p-4 pb-2">
                 <a class="btn btn-sm bg-gradient-dark position-absolute end-4 mt-3" onclick="copyCode(this);" type="button"><i class="fas fa-copy text-sm me-1"></i> Copy</a>
-                <figure class="highlight"><pre><code class="language-html" data-lang="html">#!/usr/bin/env python
+                <figure class="highlight"><pre><code class="language-html" data-lang="html">
 
-                    import bme680
-                    from datetime import datetime
-                    import time
-                    import psycopg2
-                    
-                    print("""
-                    
-                    Runs the sensor for a burn-in period, then uses a
-                    combination of relative humidity and gas resistance
-                    to estimate indoor air quality as a percentage.
-                    
-                    Press Ctrl+C to exit!
-                    
-                    """)
-                    
-                    # Connect to the QuestDB database
-                    conn = psycopg2.connect(
-                        dbname="qdb",
-                        user="admin",
-                        password="quest",
-                        host="docker_host_ip_address",
-                        port="8812"
-                    )
-                    
-                    # Create the necessary table if it doesn't exist
-                    with conn:
-                        cursor = conn.cursor()
-                        cursor.execute("CREATE TABLE  IF NOT EXISTS weather_data (temperature DOUBLE, humidity DOUBLE, pressure DOUBLE, gas_resistance DOUBLE, iaq DOUBLE, timestamp TIMESTAMP) TIMESTAMP(timestamp) PARTITION BY DAY;")
-                    
-                    
-                    # Initialize the BME680 sensor
-                    # These oversampling settings can be tweaked to
-                    # change the balance between accuracy and noise in
-                    # the data.
-                    
-                    try:
-                        sensor = bme680.BME680(bme680.I2C_ADDR_PRIMARY)
-                    except (RuntimeError, IOError):
-                        sensor = bme680.BME680(bme680.I2C_ADDR_SECONDARY)
-                    
-                    # Configuration for the BME680 sensor
-                    # These oversampling settings can be tweaked to
-                    # change the balance between accuracy and noise in
-                    # the data.
-                    sensor.set_humidity_oversample(bme680.OS_2X)
-                    sensor.set_pressure_oversample(bme680.OS_4X)
-                    sensor.set_temperature_oversample(bme680.OS_8X)
-                    sensor.set_filter(bme680.FILTER_SIZE_3)
-                    sensor.set_gas_status(bme680.ENABLE_GAS_MEAS)
-                    sensor.set_gas_heater_temperature(320)
-                    sensor.set_gas_heater_duration(150)
-                    sensor.select_gas_heater_profile(0)
-                    
-                    # Collect burn-in data for gas sensor
-                    # start_time and curr_time ensure that the
-                    # burn_in_time (in seconds) is kept track of.
-                    
-                    start_time = time.time()
-                    curr_time = time.time()
-                    burn_in_time = 290
-                    burn_in_data = []
-                    
-                        # Collect gas resistance burn-in values, then use the average
-                        # of the last 50 values to set the upper limit for calculating
-                        # gas_baseline.
-                    
-                    print('Collecting gas resistance burn-in data for 5 mins\n')
-                    
-                    while curr_time - start_time < burn_in_time:
-                        curr_time = time.time()
-                        if sensor.get_sensor_data() and sensor.data.heat_stable:
-                            gas = sensor.data.gas_resistance
-                            burn_in_data.append(gas)
-                            print('Gas: {0} Ohms'.format(gas))
-                            time.sleep(1)
-                    
-                    gas_baseline = sum(burn_in_data[-50:]) / 50.0
-                    
-                    # Set the humidity baseline to 40%, an optimal indoor humidity
-                    hum_baseline = 40.0
-                    
-                      # This sets the balance between humidity and gas reading in the
-                    # calculation of air_quality_score (25:75, humidity:gas)
-                    hum_weighting = 0.25
-                    
-                    print('Gas baseline: {0} Ohms, humidity baseline: {1:.2f} %RH\n'.format(
-                            gas_baseline,
-                            hum_baseline))
-                    
-                    # Collect and process data indefinitely
-                    while True:
-                        if sensor.get_sensor_data() and sensor.data.heat_stable:
-                            temperature = sensor.data.temperature
-                            humidity = sensor.data.humidity
-                            pressure = sensor.data.pressure
-                            gas_resistance = sensor.data.gas_resistance 
-                            timestamp = datetime.now()
-                    
-                            
-                            gas_offset = gas_baseline - gas_resistance
-                            hum_offset = humidity - hum_baseline
-                    
-                        # Calculate hum_score as the distance from the hum_baseline.
-                            if hum_offset > 0:
-                                hum_score = (100 - hum_baseline - hum_offset) / (100 - hum_baseline) * (hum_weighting * 100)
-                            else:
-                                hum_score = (hum_baseline + hum_offset) / hum_baseline * (hum_weighting * 100)
-                        
-                        # Calculate gas_score as the distance from the gas_baseline.
-                            if gas_offset > 0:
-                                gas_score = (gas_resistance / gas_baseline) * (100 - (hum_weighting * 100))
-                            else:
-                                gas_score = 100 - (hum_weighting * 100)
-                    
-                            # Calculate air_quality_score.
-                            iaq = hum_score + gas_score
-                    
-                            # Insert data into the database
-                            with conn:
-                                cursor = conn.cursor()
-                                # Insert sensor data into the table
-                                insert_query = "INSERT INTO weather_data (temperature, humidity, pressure, gas_resistance, iaq, timestamp) VALUES (%s, %s, %s, %s, %s, %s);"
-                                cursor.execute(insert_query, (temperature, humidity, pressure, gas_resistance, iaq, timestamp))
-                    
-                            print("Sensor data inserted:", temperature, humidity, pressure, gas_resistance, iaq, timestamp)
-                          
-                            time.sleep(60)  # Wait for 60 seconds before next reading</code></pre>
+
+                  {
+                    "annotations": {
+                      "list": [
+                        {
+                          "builtIn": 1,
+                          "datasource": {
+                            "type": "grafana",
+                            "uid": "-- Grafana --"
+                          },
+                          "enable": true,
+                          "hide": true,
+                          "iconColor": "rgba(0, 211, 255, 1)",
+                          "name": "Annotations & Alerts",
+                          "type": "dashboard"
+                        }
+                      ]
+                    },
+                    "description": "Weather Station Template for BME680  Sensor.",
+                    "editable": true,
+                    "fiscalYearStartMonth": 0,
+                    "graphTooltip": 0,
+                    "id": 3,
+                    "links": [],
+                    "liveNow": true,
+                    "panels": [
+                      {
+                        "datasource": {
+                          "type": "postgres",
+                          "uid": "2Bi8EToVz"
+                        },
+                        "description": "",
+                        "fieldConfig": {
+                          "defaults": {
+                            "color": {
+                              "mode": "thresholds"
+                            },
+                            "mappings": [
+                              {
+                                "options": {
+                                  "from": 0,
+                                  "result": {
+                                    "text": "Good"
+                                  },
+                                  "to": 50
+                                },
+                                "type": "range"
+                              },
+                              {
+                                "options": {
+                                  "from": 51,
+                                  "result": {
+                                    "text": "Moderate"
+                                  },
+                                  "to": 100
+                                },
+                                "type": "range"
+                              },
+                              {
+                                "options": {
+                                  "from": 101,
+                                  "result": {
+                                    "text": "Unhealthy for sensitive groups"
+                                  },
+                                  "to": 150
+                                },
+                                "type": "range"
+                              },
+                              {
+                                "options": {
+                                  "from": 151,
+                                  "result": {
+                                    "text": "Unhealthy"
+                                  },
+                                  "to": 200
+                                },
+                                "type": "range"
+                              },
+                              {
+                                "options": {
+                                  "from": 201,
+                                  "result": {
+                                    "text": "Very Unhealthy"
+                                  },
+                                  "to": 250
+                                },
+                                "type": "range"
+                              },
+                              {
+                                "options": {
+                                  "from": 251,
+                                  "result": {
+                                    "text": "Hazardous"
+                                  },
+                                  "to": 350
+                                },
+                                "type": "range"
+                              }
+                            ],
+                            "max": 400,
+                            "min": 0,
+                            "thresholds": {
+                              "mode": "absolute",
+                              "steps": [
+                                {
+                                  "color": "green",
+                                  "value": null
+                                },
+                                {
+                                  "color": "yellow",
+                                  "value": 51
+                                },
+                                {
+                                  "color": "orange",
+                                  "value": 101
+                                },
+                                {
+                                  "color": "red",
+                                  "value": 151
+                                },
+                                {
+                                  "color": "red",
+                                  "value": 201
+                                },
+                                {
+                                  "color": "purple",
+                                  "value": 251
+                                },
+                                {
+                                  "color": "darkred",
+                                  "value": 301
+                                }
+                              ]
+                            }
+                          },
+                          "overrides": []
+                        },
+                        "gridPos": {
+                          "h": 10,
+                          "w": 5,
+                          "x": 0,
+                          "y": 0
+                        },
+                        "id": 9,
+                        "options": {
+                          "orientation": "auto",
+                          "reduceOptions": {
+                            "calcs": [
+                              "lastNotNull"
+                            ],
+                            "fields": "",
+                            "values": false
+                          },
+                          "showThresholdLabels": false,
+                          "showThresholdMarkers": true,
+                          "text": {
+                            "titleSize": 45
+                          }
+                        },
+                        "pluginVersion": "9.5.1",
+                        "targets": [
+                          {
+                            "datasource": {
+                              "type": "postgres",
+                              "uid": "2Bi8EToVz"
+                            },
+                            "editorMode": "code",
+                            "format": "table",
+                            "rawQuery": true,
+                            "rawSql": "SELECT\r\ntimestamp,\r\niaq\r\nFROM  weather_data\r\n",
+                            "refId": "A",
+                            "sql": {
+                              "columns": [
+                                {
+                                  "parameters": [],
+                                  "type": "function"
+                                }
+                              ],
+                              "groupBy": [
+                                {
+                                  "property": {
+                                    "type": "string"
+                                  },
+                                  "type": "groupBy"
+                                }
+                              ],
+                              "limit": 50
+                            }
+                          }
+                        ],
+                        "title": "Indoor Air Quality (IAQ) Classification",
+                        "type": "gauge"
+                      },
+                      {
+                        "datasource": {
+                          "type": "postgres",
+                          "uid": "2Bi8EToVz"
+                        },
+                        "fieldConfig": {
+                          "defaults": {
+                            "color": {
+                              "mode": "palette-classic"
+                            },
+                            "custom": {
+                              "axisCenteredZero": false,
+                              "axisColorMode": "text",
+                              "axisLabel": "",
+                              "axisPlacement": "auto",
+                              "barAlignment": 0,
+                              "drawStyle": "line",
+                              "fillOpacity": 10,
+                              "gradientMode": "none",
+                              "hideFrom": {
+                                "legend": false,
+                                "tooltip": false,
+                                "viz": false
+                              },
+                              "lineInterpolation": "linear",
+                              "lineWidth": 1,
+                              "pointSize": 5,
+                              "scaleDistribution": {
+                                "type": "linear"
+                              },
+                              "showPoints": "auto",
+                              "spanNulls": false,
+                              "stacking": {
+                                "group": "A",
+                                "mode": "none"
+                              },
+                              "thresholdsStyle": {
+                                "mode": "off"
+                              }
+                            },
+                            "mappings": [],
+                            "thresholds": {
+                              "mode": "absolute",
+                              "steps": [
+                                {
+                                  "color": "green",
+                                  "value": null
+                                },
+                                {
+                                  "color": "red",
+                                  "value": 80
+                                }
+                              ]
+                            }
+                          },
+                          "overrides": []
+                        },
+                        "gridPos": {
+                          "h": 10,
+                          "w": 7,
+                          "x": 5,
+                          "y": 0
+                        },
+                        "id": 2,
+                        "options": {
+                          "legend": {
+                            "calcs": [],
+                            "displayMode": "list",
+                            "placement": "bottom",
+                            "showLegend": true
+                          },
+                          "tooltip": {
+                            "mode": "single",
+                            "sort": "none"
+                          }
+                        },
+                        "targets": [
+                          {
+                            "datasource": {
+                              "type": "postgres",
+                              "uid": "2Bi8EToVz"
+                            },
+                            "editorMode": "code",
+                            "format": "table",
+                            "rawQuery": true,
+                            "rawSql": "SELECT\r\ntimestamp,\r\niaq\r\nFROM  weather_data",
+                            "refId": "A",
+                            "sql": {
+                              "columns": [],
+                              "groupBy": [
+                                {
+                                  "property": {
+                                    "type": "string"
+                                  },
+                                  "type": "groupBy"
+                                }
+                              ],
+                              "limit": 50
+                            }
+                          }
+                        ],
+                        "title": "Indoor Air Quality (IAQ)  Rating",
+                        "type": "timeseries"
+                      },
+                      {
+                        "datasource": {
+                          "type": "postgres",
+                          "uid": "2Bi8EToVz"
+                        },
+                        "description": "",
+                        "fieldConfig": {
+                          "defaults": {
+                            "color": {
+                              "mode": "thresholds"
+                            },
+                            "mappings": [
+                              {
+                                "options": {
+                                  "from": 35,
+                                  "result": {
+                                    "index": 0,
+                                    "text": "Very Hot"
+                                  },
+                                  "to": 45
+                                },
+                                "type": "range"
+                              },
+                              {
+                                "options": {
+                                  "from": 27,
+                                  "result": {
+                                    "index": 1,
+                                    "text": "Hot   "
+                                  },
+                                  "to": 35
+                                },
+                                "type": "range"
+                              },
+                              {
+                                "options": {
+                                  "from": 20,
+                                  "result": {
+                                    "index": 2,
+                                    "text": "Good"
+                                  },
+                                  "to": 27
+                                },
+                                "type": "range"
+                              },
+                              {
+                                "options": {
+                                  "from": 10,
+                                  "result": {
+                                    "index": 3,
+                                    "text": "Cold"
+                                  },
+                                  "to": 20
+                                },
+                                "type": "range"
+                              },
+                              {
+                                "options": {
+                                  "from": 0,
+                                  "result": {
+                                    "index": 4,
+                                    "text": "Very Cold"
+                                  },
+                                  "to": 10
+                                },
+                                "type": "range"
+                              }
+                            ],
+                            "max": 45,
+                            "min": 0,
+                            "thresholds": {
+                              "mode": "absolute",
+                              "steps": [
+                                {
+                                  "color": "dark-blue",
+                                  "value": null
+                                },
+                                {
+                                  "color": "light-blue",
+                                  "value": 10
+                                },
+                                {
+                                  "color": "green",
+                                  "value": 20
+                                },
+                                {
+                                  "color": "orange",
+                                  "value": 27
+                                },
+                                {
+                                  "color": "red",
+                                  "value": 35
+                                }
+                              ]
+                            }
+                          },
+                          "overrides": []
+                        },
+                        "gridPos": {
+                          "h": 5,
+                          "w": 4,
+                          "x": 12,
+                          "y": 0
+                        },
+                        "id": 4,
+                        "options": {
+                          "orientation": "auto",
+                          "reduceOptions": {
+                            "calcs": [
+                              "lastNotNull"
+                            ],
+                            "fields": "",
+                            "values": false
+                          },
+                          "showThresholdLabels": false,
+                          "showThresholdMarkers": true,
+                          "text": {}
+                        },
+                        "pluginVersion": "9.5.1",
+                        "targets": [
+                          {
+                            "datasource": {
+                              "type": "postgres",
+                              "uid": "2Bi8EToVz"
+                            },
+                            "editorMode": "code",
+                            "format": "table",
+                            "rawQuery": true,
+                            "rawSql": "SELECT\r\ntimestamp,\r\ntemperature\r\nFROM  weather_data\r\nWHERE timestamp > dateadd('d', -1, now())",
+                            "refId": "A",
+                            "sql": {
+                              "columns": [
+                                {
+                                  "parameters": [],
+                                  "type": "function"
+                                }
+                              ],
+                              "groupBy": [
+                                {
+                                  "property": {
+                                    "type": "string"
+                                  },
+                                  "type": "groupBy"
+                                }
+                              ],
+                              "limit": 50
+                            }
+                          }
+                        ],
+                        "title": "Temperature",
+                        "type": "gauge"
+                      },
+                      {
+                        "datasource": {
+                          "type": "postgres",
+                          "uid": "2Bi8EToVz"
+                        },
+                        "fieldConfig": {
+                          "defaults": {
+                            "color": {
+                              "mode": "palette-classic"
+                            },
+                            "custom": {
+                              "axisCenteredZero": false,
+                              "axisColorMode": "text",
+                              "axisLabel": "° Celsius",
+                              "axisPlacement": "auto",
+                              "barAlignment": 0,
+                              "drawStyle": "line",
+                              "fillOpacity": 10,
+                              "gradientMode": "none",
+                              "hideFrom": {
+                                "legend": false,
+                                "tooltip": false,
+                                "viz": false
+                              },
+                              "lineInterpolation": "linear",
+                              "lineStyle": {
+                                "fill": "solid"
+                              },
+                              "lineWidth": 1,
+                              "pointSize": 5,
+                              "scaleDistribution": {
+                                "type": "linear"
+                              },
+                              "showPoints": "auto",
+                              "spanNulls": false,
+                              "stacking": {
+                                "group": "A",
+                                "mode": "none"
+                              },
+                              "thresholdsStyle": {
+                                "mode": "off"
+                              }
+                            },
+                            "mappings": [],
+                            "thresholds": {
+                              "mode": "absolute",
+                              "steps": [
+                                {
+                                  "color": "green",
+                                  "value": null
+                                },
+                                {
+                                  "color": "red",
+                                  "value": 80
+                                }
+                              ]
+                            }
+                          },
+                          "overrides": []
+                        },
+                        "gridPos": {
+                          "h": 5,
+                          "w": 8,
+                          "x": 16,
+                          "y": 0
+                        },
+                        "id": 6,
+                        "options": {
+                          "legend": {
+                            "calcs": [],
+                            "displayMode": "list",
+                            "placement": "bottom",
+                            "showLegend": true
+                          },
+                          "tooltip": {
+                            "mode": "single",
+                            "sort": "none"
+                          }
+                        },
+                        "targets": [
+                          {
+                            "datasource": {
+                              "type": "postgres",
+                              "uid": "2Bi8EToVz"
+                            },
+                            "editorMode": "code",
+                            "format": "table",
+                            "rawQuery": true,
+                            "rawSql": "SELECT\r\ntimestamp,\r\ntemperature\r\nFROM  weather_data\r\nWHERE timestamp > dateadd('d', -1, now())",
+                            "refId": "A",
+                            "sql": {
+                              "columns": [
+                                {
+                                  "parameters": [],
+                                  "type": "function"
+                                }
+                              ],
+                              "groupBy": [
+                                {
+                                  "property": {
+                                    "type": "string"
+                                  },
+                                  "type": "groupBy"
+                                }
+                              ],
+                              "limit": 50
+                            }
+                          }
+                        ],
+                        "title": "Temperature",
+                        "type": "timeseries"
+                      },
+                      {
+                        "datasource": {
+                          "type": "postgres",
+                          "uid": "2Bi8EToVz"
+                        },
+                        "description": "",
+                        "fieldConfig": {
+                          "defaults": {
+                            "color": {
+                              "mode": "thresholds"
+                            },
+                            "mappings": [
+                              {
+                                "options": {
+                                  "from": 0,
+                                  "result": {
+                                    "text": "Very Dry"
+                                  },
+                                  "to": 30
+                                },
+                                "type": "range"
+                              },
+                              {
+                                "options": {
+                                  "from": 30,
+                                  "result": {
+                                    "text": "Good"
+                                  },
+                                  "to": 60
+                                },
+                                "type": "range"
+                              },
+                              {
+                                "options": {
+                                  "from": 60,
+                                  "result": {
+                                    "text": "Humid"
+                                  },
+                                  "to": 80
+                                },
+                                "type": "range"
+                              },
+                              {
+                                "options": {
+                                  "from": 80,
+                                  "result": {
+                                    "text": "Very Humid"
+                                  },
+                                  "to": 100
+                                },
+                                "type": "range"
+                              }
+                            ],
+                            "max": 100,
+                            "min": 0,
+                            "thresholds": {
+                              "mode": "absolute",
+                              "steps": [
+                                {
+                                  "color": "blue",
+                                  "value": null
+                                },
+                                {
+                                  "color": "green",
+                                  "value": 30
+                                },
+                                {
+                                  "color": "yellow",
+                                  "value": 60
+                                },
+                                {
+                                  "color": "red",
+                                  "value": 80
+                                }
+                              ]
+                            }
+                          },
+                          "overrides": []
+                        },
+                        "gridPos": {
+                          "h": 5,
+                          "w": 4,
+                          "x": 12,
+                          "y": 5
+                        },
+                        "id": 3,
+                        "options": {
+                          "orientation": "auto",
+                          "reduceOptions": {
+                            "calcs": [
+                              "lastNotNull"
+                            ],
+                            "fields": "",
+                            "values": false
+                          },
+                          "showThresholdLabels": false,
+                          "showThresholdMarkers": true,
+                          "text": {
+                            "titleSize": 0
+                          }
+                        },
+                        "pluginVersion": "9.5.1",
+                        "targets": [
+                          {
+                            "datasource": {
+                              "type": "postgres",
+                              "uid": "2Bi8EToVz"
+                            },
+                            "editorMode": "code",
+                            "format": "table",
+                            "rawQuery": true,
+                            "rawSql": "SELECT\r\ntimestamp,\r\nhumidity\r\nFROM  weather_data\r\nWHERE timestamp > dateadd('d', -1, now())",
+                            "refId": "A",
+                            "sql": {
+                              "columns": [
+                                {
+                                  "parameters": [],
+                                  "type": "function"
+                                }
+                              ],
+                              "groupBy": [
+                                {
+                                  "property": {
+                                    "type": "string"
+                                  },
+                                  "type": "groupBy"
+                                }
+                              ],
+                              "limit": 50
+                            }
+                          }
+                        ],
+                        "title": "Humidity",
+                        "type": "gauge"
+                      },
+                      {
+                        "datasource": {
+                          "type": "postgres",
+                          "uid": "2Bi8EToVz"
+                        },
+                        "fieldConfig": {
+                          "defaults": {
+                            "color": {
+                              "mode": "palette-classic"
+                            },
+                            "custom": {
+                              "axisCenteredZero": false,
+                              "axisColorMode": "text",
+                              "axisLabel": "% Percentage",
+                              "axisPlacement": "auto",
+                              "barAlignment": 0,
+                              "drawStyle": "line",
+                              "fillOpacity": 10,
+                              "gradientMode": "none",
+                              "hideFrom": {
+                                "legend": false,
+                                "tooltip": false,
+                                "viz": false
+                              },
+                              "lineInterpolation": "linear",
+                              "lineWidth": 1,
+                              "pointSize": 5,
+                              "scaleDistribution": {
+                                "type": "linear"
+                              },
+                              "showPoints": "auto",
+                              "spanNulls": false,
+                              "stacking": {
+                                "group": "A",
+                                "mode": "none"
+                              },
+                              "thresholdsStyle": {
+                                "mode": "off"
+                              }
+                            },
+                            "mappings": [],
+                            "thresholds": {
+                              "mode": "absolute",
+                              "steps": [
+                                {
+                                  "color": "green",
+                                  "value": null
+                                },
+                                {
+                                  "color": "red",
+                                  "value": 80
+                                }
+                              ]
+                            }
+                          },
+                          "overrides": []
+                        },
+                        "gridPos": {
+                          "h": 5,
+                          "w": 8,
+                          "x": 16,
+                          "y": 5
+                        },
+                        "id": 5,
+                        "options": {
+                          "legend": {
+                            "calcs": [],
+                            "displayMode": "list",
+                            "placement": "bottom",
+                            "showLegend": true
+                          },
+                          "tooltip": {
+                            "mode": "single",
+                            "sort": "none"
+                          }
+                        },
+                        "targets": [
+                          {
+                            "datasource": {
+                              "type": "postgres",
+                              "uid": "2Bi8EToVz"
+                            },
+                            "editorMode": "code",
+                            "format": "table",
+                            "rawQuery": true,
+                            "rawSql": "SELECT\r\ntimestamp,\r\nhumidity\r\nFROM  weather_data\r\nWHERE timestamp > dateadd('d', -1, now())",
+                            "refId": "A",
+                            "sql": {
+                              "columns": [
+                                {
+                                  "parameters": [],
+                                  "type": "function"
+                                }
+                              ],
+                              "groupBy": [
+                                {
+                                  "property": {
+                                    "type": "string"
+                                  },
+                                  "type": "groupBy"
+                                }
+                              ],
+                              "limit": 50
+                            }
+                          }
+                        ],
+                        "title": "Humidity",
+                        "type": "timeseries"
+                      },
+                      {
+                        "datasource": {
+                          "type": "postgres",
+                          "uid": "2Bi8EToVz"
+                        },
+                        "description": "",
+                        "fieldConfig": {
+                          "defaults": {
+                            "color": {
+                              "mode": "thresholds"
+                            },
+                            "mappings": [
+                              {
+                                "options": {
+                                  "from": 950,
+                                  "result": {
+                                    "text": "Very Low"
+                                  },
+                                  "to": 980
+                                },
+                                "type": "range"
+                              },
+                              {
+                                "options": {
+                                  "from": 980,
+                                  "result": {
+                                    "text": "Low     "
+                                  },
+                                  "to": 1000
+                                },
+                                "type": "range"
+                              },
+                              {
+                                "options": {
+                                  "from": 1000,
+                                  "result": {
+                                    "text": "Normal"
+                                  },
+                                  "to": 1025
+                                },
+                                "type": "range"
+                              },
+                              {
+                                "options": {
+                                  "from": 1025,
+                                  "result": {
+                                    "text": "High"
+                                  },
+                                  "to": 1050
+                                },
+                                "type": "range"
+                              }
+                            ],
+                            "max": 1050,
+                            "min": 950,
+                            "thresholds": {
+                              "mode": "absolute",
+                              "steps": [
+                                {
+                                  "color": "red",
+                                  "value": null
+                                },
+                                {
+                                  "color": "yellow",
+                                  "value": 980
+                                },
+                                {
+                                  "color": "green",
+                                  "value": 1000
+                                },
+                                {
+                                  "color": "blue",
+                                  "value": 1025
+                                }
+                              ]
+                            }
+                          },
+                          "overrides": []
+                        },
+                        "gridPos": {
+                          "h": 8,
+                          "w": 5,
+                          "x": 0,
+                          "y": 10
+                        },
+                        "id": 7,
+                        "options": {
+                          "orientation": "auto",
+                          "reduceOptions": {
+                            "calcs": [
+                              "lastNotNull"
+                            ],
+                            "fields": "",
+                            "values": false
+                          },
+                          "showThresholdLabels": false,
+                          "showThresholdMarkers": true,
+                          "text": {}
+                        },
+                        "pluginVersion": "9.5.1",
+                        "targets": [
+                          {
+                            "datasource": {
+                              "type": "postgres",
+                              "uid": "2Bi8EToVz"
+                            },
+                            "editorMode": "code",
+                            "format": "table",
+                            "rawQuery": true,
+                            "rawSql": "SELECT\r\ntimestamp,\r\npressure\r\nFROM  weather_data\r\nWHERE timestamp > dateadd('d', -1, now())",
+                            "refId": "A",
+                            "sql": {
+                              "columns": [],
+                              "groupBy": [
+                                {
+                                  "property": {
+                                    "type": "string"
+                                  },
+                                  "type": "groupBy"
+                                }
+                              ],
+                              "limit": 50
+                            }
+                          }
+                        ],
+                        "title": "Pressure",
+                        "type": "gauge"
+                      },
+                      {
+                        "datasource": {
+                          "type": "postgres",
+                          "uid": "2Bi8EToVz"
+                        },
+                        "fieldConfig": {
+                          "defaults": {
+                            "color": {
+                              "mode": "palette-classic"
+                            },
+                            "custom": {
+                              "axisCenteredZero": false,
+                              "axisColorMode": "text",
+                              "axisLabel": "Millibars",
+                              "axisPlacement": "auto",
+                              "barAlignment": 0,
+                              "drawStyle": "line",
+                              "fillOpacity": 10,
+                              "gradientMode": "none",
+                              "hideFrom": {
+                                "legend": false,
+                                "tooltip": false,
+                                "viz": false
+                              },
+                              "lineInterpolation": "linear",
+                              "lineWidth": 1,
+                              "pointSize": 5,
+                              "scaleDistribution": {
+                                "type": "linear"
+                              },
+                              "showPoints": "auto",
+                              "spanNulls": false,
+                              "stacking": {
+                                "group": "A",
+                                "mode": "none"
+                              },
+                              "thresholdsStyle": {
+                                "mode": "off"
+                              }
+                            },
+                            "mappings": [],
+                            "thresholds": {
+                              "mode": "absolute",
+                              "steps": [
+                                {
+                                  "color": "green",
+                                  "value": null
+                                },
+                                {
+                                  "color": "red",
+                                  "value": 80
+                                }
+                              ]
+                            }
+                          },
+                          "overrides": []
+                        },
+                        "gridPos": {
+                          "h": 8,
+                          "w": 19,
+                          "x": 5,
+                          "y": 10
+                        },
+                        "id": 8,
+                        "options": {
+                          "legend": {
+                            "calcs": [],
+                            "displayMode": "list",
+                            "placement": "bottom",
+                            "showLegend": true
+                          },
+                          "tooltip": {
+                            "mode": "single",
+                            "sort": "none"
+                          }
+                        },
+                        "targets": [
+                          {
+                            "datasource": {
+                              "type": "postgres",
+                              "uid": "2Bi8EToVz"
+                            },
+                            "editorMode": "code",
+                            "format": "table",
+                            "rawQuery": true,
+                            "rawSql": "SELECT\r\ntimestamp,\r\npressure\r\nFROM  weather_data\r\nWHERE timestamp > dateadd('d', -1, now())",
+                            "refId": "A",
+                            "sql": {
+                              "columns": [
+                                {
+                                  "parameters": [],
+                                  "type": "function"
+                                }
+                              ],
+                              "groupBy": [
+                                {
+                                  "property": {
+                                    "type": "string"
+                                  },
+                                  "type": "groupBy"
+                                }
+                              ],
+                              "limit": 50
+                            }
+                          }
+                        ],
+                        "title": "Pressure",
+                        "type": "timeseries"
+                      }
+                    ],
+                    "refresh": "1m",
+                    "schemaVersion": 38,
+                    "style": "dark",
+                    "tags": [
+                      "Weather Station",
+                      "BME680"
+                    ],
+                    "templating": {
+                      "list": []
+                    },
+                    "time": {
+                      "from": "now-24h",
+                      "to": "now"
+                    },
+                    "timepicker": {},
+                    "timezone": "",
+                    "title": "Weather Station Template BME680",
+                    "uid": "d6dcc3ec-ef11-4d34-9fd3-bd8042ccf350",
+                    "version": 71,
+                    "weekStart": ""
+                  }{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "description": "Weather Station Template for BME680  Sensor.",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 3,
+  "links": [],
+  "liveNow": true,
+  "panels": [
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "2Bi8EToVz"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [
+            {
+              "options": {
+                "from": 0,
+                "result": {
+                  "text": "Good"
+                },
+                "to": 50
+              },
+              "type": "range"
+            },
+            {
+              "options": {
+                "from": 51,
+                "result": {
+                  "text": "Moderate"
+                },
+                "to": 100
+              },
+              "type": "range"
+            },
+            {
+              "options": {
+                "from": 101,
+                "result": {
+                  "text": "Unhealthy for sensitive groups"
+                },
+                "to": 150
+              },
+              "type": "range"
+            },
+            {
+              "options": {
+                "from": 151,
+                "result": {
+                  "text": "Unhealthy"
+                },
+                "to": 200
+              },
+              "type": "range"
+            },
+            {
+              "options": {
+                "from": 201,
+                "result": {
+                  "text": "Very Unhealthy"
+                },
+                "to": 250
+              },
+              "type": "range"
+            },
+            {
+              "options": {
+                "from": 251,
+                "result": {
+                  "text": "Hazardous"
+                },
+                "to": 350
+              },
+              "type": "range"
+            }
+          ],
+          "max": 400,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 51
+              },
+              {
+                "color": "orange",
+                "value": 101
+              },
+              {
+                "color": "red",
+                "value": 151
+              },
+              {
+                "color": "red",
+                "value": 201
+              },
+              {
+                "color": "purple",
+                "value": 251
+              },
+              {
+                "color": "darkred",
+                "value": 301
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 5,
+        "x": 0,
+        "y": 0
+      },
+      "id": 9,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "text": {
+          "titleSize": 45
+        }
+      },
+      "pluginVersion": "9.5.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "2Bi8EToVz"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\ntimestamp,\r\niaq\r\nFROM  weather_data\r\n",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Indoor Air Quality (IAQ) Classification",
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "2Bi8EToVz"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 7,
+        "x": 5,
+        "y": 0
+      },
+      "id": 2,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "2Bi8EToVz"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\ntimestamp,\r\niaq\r\nFROM  weather_data",
+          "refId": "A",
+          "sql": {
+            "columns": [],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Indoor Air Quality (IAQ)  Rating",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "2Bi8EToVz"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [
+            {
+              "options": {
+                "from": 35,
+                "result": {
+                  "index": 0,
+                  "text": "Very Hot"
+                },
+                "to": 45
+              },
+              "type": "range"
+            },
+            {
+              "options": {
+                "from": 27,
+                "result": {
+                  "index": 1,
+                  "text": "Hot   "
+                },
+                "to": 35
+              },
+              "type": "range"
+            },
+            {
+              "options": {
+                "from": 20,
+                "result": {
+                  "index": 2,
+                  "text": "Good"
+                },
+                "to": 27
+              },
+              "type": "range"
+            },
+            {
+              "options": {
+                "from": 10,
+                "result": {
+                  "index": 3,
+                  "text": "Cold"
+                },
+                "to": 20
+              },
+              "type": "range"
+            },
+            {
+              "options": {
+                "from": 0,
+                "result": {
+                  "index": 4,
+                  "text": "Very Cold"
+                },
+                "to": 10
+              },
+              "type": "range"
+            }
+          ],
+          "max": 45,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "dark-blue",
+                "value": null
+              },
+              {
+                "color": "light-blue",
+                "value": 10
+              },
+              {
+                "color": "green",
+                "value": 20
+              },
+              {
+                "color": "orange",
+                "value": 27
+              },
+              {
+                "color": "red",
+                "value": 35
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 4,
+        "x": 12,
+        "y": 0
+      },
+      "id": 4,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "text": {}
+      },
+      "pluginVersion": "9.5.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "2Bi8EToVz"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\ntimestamp,\r\ntemperature\r\nFROM  weather_data\r\nWHERE timestamp > dateadd('d', -1, now())",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Temperature",
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "2Bi8EToVz"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "° Celsius",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 8,
+        "x": 16,
+        "y": 0
+      },
+      "id": 6,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "2Bi8EToVz"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\ntimestamp,\r\ntemperature\r\nFROM  weather_data\r\nWHERE timestamp > dateadd('d', -1, now())",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Temperature",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "2Bi8EToVz"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [
+            {
+              "options": {
+                "from": 0,
+                "result": {
+                  "text": "Very Dry"
+                },
+                "to": 30
+              },
+              "type": "range"
+            },
+            {
+              "options": {
+                "from": 30,
+                "result": {
+                  "text": "Good"
+                },
+                "to": 60
+              },
+              "type": "range"
+            },
+            {
+              "options": {
+                "from": 60,
+                "result": {
+                  "text": "Humid"
+                },
+                "to": 80
+              },
+              "type": "range"
+            },
+            {
+              "options": {
+                "from": 80,
+                "result": {
+                  "text": "Very Humid"
+                },
+                "to": 100
+              },
+              "type": "range"
+            }
+          ],
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 30
+              },
+              {
+                "color": "yellow",
+                "value": 60
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 4,
+        "x": 12,
+        "y": 5
+      },
+      "id": 3,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "text": {
+          "titleSize": 0
+        }
+      },
+      "pluginVersion": "9.5.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "2Bi8EToVz"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\ntimestamp,\r\nhumidity\r\nFROM  weather_data\r\nWHERE timestamp > dateadd('d', -1, now())",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Humidity",
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "2Bi8EToVz"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "% Percentage",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 8,
+        "x": 16,
+        "y": 5
+      },
+      "id": 5,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "2Bi8EToVz"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\ntimestamp,\r\nhumidity\r\nFROM  weather_data\r\nWHERE timestamp > dateadd('d', -1, now())",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Humidity",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "2Bi8EToVz"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [
+            {
+              "options": {
+                "from": 950,
+                "result": {
+                  "text": "Very Low"
+                },
+                "to": 980
+              },
+              "type": "range"
+            },
+            {
+              "options": {
+                "from": 980,
+                "result": {
+                  "text": "Low     "
+                },
+                "to": 1000
+              },
+              "type": "range"
+            },
+            {
+              "options": {
+                "from": 1000,
+                "result": {
+                  "text": "Normal"
+                },
+                "to": 1025
+              },
+              "type": "range"
+            },
+            {
+              "options": {
+                "from": 1025,
+                "result": {
+                  "text": "High"
+                },
+                "to": 1050
+              },
+              "type": "range"
+            }
+          ],
+          "max": 1050,
+          "min": 950,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 980
+              },
+              {
+                "color": "green",
+                "value": 1000
+              },
+              {
+                "color": "blue",
+                "value": 1025
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 5,
+        "x": 0,
+        "y": 10
+      },
+      "id": 7,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "text": {}
+      },
+      "pluginVersion": "9.5.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "2Bi8EToVz"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\ntimestamp,\r\npressure\r\nFROM  weather_data\r\nWHERE timestamp > dateadd('d', -1, now())",
+          "refId": "A",
+          "sql": {
+            "columns": [],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Pressure",
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "2Bi8EToVz"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "Millibars",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 19,
+        "x": 5,
+        "y": 10
+      },
+      "id": 8,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "2Bi8EToVz"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\ntimestamp,\r\npressure\r\nFROM  weather_data\r\nWHERE timestamp > dateadd('d', -1, now())",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Pressure",
+      "type": "timeseries"
+    }
+  ],
+  "refresh": "1m",
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": [
+    "Weather Station",
+    "BME680"
+  ],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-24h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Weather Station Template BME680",
+  "uid": "d6dcc3ec-ef11-4d34-9fd3-bd8042ccf350",
+  "version": 71,
+  "weekStart": ""
+}
+
+
+
+                          </code></pre>
                 </figure>
               </div>
             </div>
