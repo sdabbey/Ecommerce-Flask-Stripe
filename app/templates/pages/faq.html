@@ -1,9 +1,15 @@
-{% extends 'layouts/base-dark.html' %}
+{% extends 'layouts/base.html' %}
 
+{% block title %} Raspberry Pi Devbox {% endblock title %}
 
-{% block body %}faq bg-gray-200{% endblock body %}
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block body_class %} Contact Us bg-gray-100 {% endblock body_class %}
 
 {% block content %}
+
+  {% include "includes/navigation-light.html" %}
 
   <section class="pt-3 pt-md-5 pt-lg-7 pb-md-5 pb-lg-7">
     <div class="container">
@@ -288,7 +294,11 @@
       </div>
     </div>
   </section>
+  {% endblock content %}
 
-{% endblock content %}
-
-{% block footer %}{% endblock footer %}
+  <!-- Specific JS goes HERE --> 
+  {% block javascripts %}
+  
+    <script src="/static/assets/js/soft-design-system.min.js?v=1.0.1" type="text/javascript"></script>
+  
+  {% endblock javascripts %}
