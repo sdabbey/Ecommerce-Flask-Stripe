@@ -6,7 +6,7 @@ ENV PYTHONUNBUFFERED 1
 
 # Used by Stripe for callback URL 
 # for successful payment and cancelled
-ENV SERVER_ADDRESS http://localhost:5085/
+ENV SERVER_ADDRESS  ${SERVER_ADDRESS}
 
 # Stripe Secrets 
 ENV STRIPE_SECRET_KEY      ${STRIPE_SECRET_KEY}
