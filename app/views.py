@@ -125,6 +125,7 @@ def create_checkout_session(path):
 
 # Product Index
 @app.route('/',          defaults={'path': 'pages/index.html'})
+@app.route('/pages/', defaults={'path': 'pages/index.html'})
 @app.route('/products/', defaults={'path': 'products/index.html'})
 def products_index(path):
 
