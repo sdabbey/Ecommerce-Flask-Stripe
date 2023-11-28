@@ -130,7 +130,6 @@ def render_index():
     return render_template("pages/index.html")   
 
 # Product Index
-@app.route('/',          defaults={'path': 'products/index.html'})
 @app.route('/products/', defaults={'path': 'products/index.html'})
 def products_index(path):
 
