@@ -123,6 +123,9 @@ def create_checkout_session(path):
     except Exception as e:
         return jsonify(error=str(e)), 403
 
+# Home Index
+@app.route('/', defaults={'path': 'pages/index.html'})
+def index(path):
 
 
 
