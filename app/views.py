@@ -125,9 +125,10 @@ def create_checkout_session(path):
     
 
  # Home Index
-@app.route('/')
-def home():
-    return render_template('pages/index.html')
+
+@app.route('/index.html', defaults={'path': 'pages/index.html'}, methods=["GET"])
+def render_index():
+    return render_template("pages/index.html")
   
 
 # Product Index
