@@ -130,7 +130,6 @@ def index():
 
 
 # Product Index
-@app.route('/', defaults={'path': 'products/index.html'})
 @app.route('/products/', defaults={'path': 'products/index.html'})
 def products_index(path):
 
