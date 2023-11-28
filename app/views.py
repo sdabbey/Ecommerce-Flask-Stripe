@@ -122,6 +122,12 @@ def create_checkout_session(path):
         return jsonify({"sessionId": checkout_session["id"]})
     except Exception as e:
         return jsonify(error=str(e)), 403
+    
+
+ # Product Index
+@app.route('/index.html', defaults={'path': 'pages/index.html'}, methods=["GET"])
+def render_index():
+    return render_template("pages/index.html")   
 
 # Product Index
 @app.route('/',          defaults={'path': 'products/index.html'})
