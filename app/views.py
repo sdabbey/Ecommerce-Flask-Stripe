@@ -28,7 +28,7 @@ def contact():
         # Redirect or show a success message
         return redirect(url_for('contact_thank_you'))
 
-    return render_template('/pages/contact-us.html')
+    return render_template('pages/contact-us.html')
 
 # Flask modules
 from flask   import render_template, request, jsonify, redirect, g, url_for
