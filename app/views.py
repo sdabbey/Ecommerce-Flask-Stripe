@@ -124,7 +124,7 @@ def create_checkout_session(path):
         return jsonify(error=str(e)), 403
 
 # Product Index
-@app.route('/',          defaults={'path': 'products/index.html'})
+@app.route('/',          defaults={'path': 'pages/index.html'})
 @app.route('/products/', defaults={'path': 'products/index.html'})
 def products_index(path):
 
@@ -146,7 +146,7 @@ def products_index(path):
             products.append( product )
 
     # Render Products Page
-    return render_template( 'ecommerce/index.html', 
+    return render_template( 'pages/index.html', 
                             products=products, 
                             featured_product=load_product_by_slug('featured') )
 
