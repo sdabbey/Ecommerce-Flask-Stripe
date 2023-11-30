@@ -122,9 +122,16 @@ def create_checkout_session(path):
         return jsonify({"sessionId": checkout_session["id"]})
     except Exception as e:
         return jsonify(error=str(e)), 403
+    
+    
+    # Route for the home page
+@app.route('/')
+def home_index():
+    # You can add any logic here if needed for the home page
+    return render_template('pages/index.html')
+
 
 # Product Index
-@app.route('/',          defaults={'path': 'products/index.html'})
 @app.route('/products/', defaults={'path': 'products/index.html'})
 def products_index(path):
 
