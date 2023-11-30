@@ -8,8 +8,27 @@ import base64
 import sqlite3
 import sqlite3 as sql
 
+from flask_mail import Message
+from app import mail
 
+# Function to send email (similar to your previous example)
+def send_email(to, subject, message):
+    # ... same as your previous implementation ...
 
+@app.route('/contact', methods=['GET', 'POST'])
+def contact():
+    if request.method == 'POST':
+        name = request.form.get('name')
+        email = request.form.get('email')
+        message = request.form.get('message')
+
+        # Sending email logic (you can modify as needed)
+        send_email('info@quantiota.com', f'Message from {name}', message)
+
+        # Redirect or show a success message
+        return redirect(url_for('contact_thank_you'))
+
+    return render_template('/pages/contact-us.html')
 
 # Flask modules
 from flask   import render_template, request, jsonify, redirect, g, url_for
