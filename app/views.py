@@ -125,7 +125,7 @@ def create_checkout_session(path):
     
 
     # Route for the home page
-@app.route('/',          defaults={'path': 'pages/index.html'})
+@app.route('/')
 def home_index():
     # You can add any logic here if needed for the home page
     return render_template('pages/index.html')
