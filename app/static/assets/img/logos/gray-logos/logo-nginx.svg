@@ -1,15 +1,1 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Generator: Adobe Illustrator 24.0.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
-<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 viewBox="0 0 256 256" style="enable-background:new 0 0 256 256;" xml:space="preserve">
-<style type="text/css">
-	.st0{fill:#5D5D5D;}
-	.st1{fill:#FFFFFF;}
-</style>
-<path class="st0" d="M17.3,191.9c1.2,2.1,2.8,3.6,4.9,4.8l99.3,57.2l0,0c4.1,2.4,9.2,2.4,13.1,0l99.3-57.2c4.1-2.3,6.6-6.7,6.6-11.5
-	V70.8l0,0c0-4.8-2.4-9.2-6.6-11.5L134.6,2.1l0,0c-4.1-2.4-9.2-2.4-13.1,0l0,0L22.2,59.3c-4.3,2.3-6.7,6.7-6.7,11.5l0,0v114.6
-	C15.5,187.7,16.1,189.9,17.3,191.9"/>
-<path class="st1" d="M96.2,171.6c0,7.1-5.7,12.8-12.8,12.8c-7.1,0-12.8-5.7-12.8-12.8l0,0V84.1c0-6.8,6.1-12.4,14.4-12.4
-	c6.1,0,13.1,2.4,17.4,7.7l3.9,4.6l53.4,63.8V84.3l0,0c0-7.1,5.7-12.8,12.8-12.8s12.8,5.7,12.8,12.8l0,0v87.6
-	c0,6.8-6.1,12.4-14.4,12.4c-6.1,0-13.1-2.4-17.4-7.7l-57.2-68.3v63.3L96.2,171.6L96.2,171.6z"/>
-</svg>
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="256px" height="256px" viewBox="0,0,256,256"><g transform="translate(51.2,51.2) scale(0.6,0.6)"><g fill="none" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal"><g transform=""><path d="M17.3,191.9c1.2,2.1 2.8,3.6 4.9,4.8l99.3,57.2v0c4.1,2.4 9.2,2.4 13.1,0l99.3,-57.2c4.1,-2.3 6.6,-6.7 6.6,-11.5v-114.4v0c0,-4.8 -2.4,-9.2 -6.6,-11.5l-99.3,-57.2v0c-4.1,-2.4 -9.2,-2.4 -13.1,0v0l-99.3,57.2c-4.3,2.3 -6.7,6.7 -6.7,11.5v0v114.6c0,2.3 0.6,4.5 1.8,6.5" fill="#5d5d5d"></path><path d="M96.2,171.6c0,7.1 -5.7,12.8 -12.8,12.8c-7.1,0 -12.8,-5.7 -12.8,-12.8v0v-87.5c0,-6.8 6.1,-12.4 14.4,-12.4c6.1,0 13.1,2.4 17.4,7.7l3.9,4.6l53.4,63.8v-63.5v0c0,-7.1 5.7,-12.8 12.8,-12.8c7.1,0 12.8,5.7 12.8,12.8v0v87.6c0,6.8 -6.1,12.4 -14.4,12.4c-6.1,0 -13.1,-2.4 -17.4,-7.7l-57.2,-68.3v63.3h-0.1z" fill="#ffffff"></path></g></g></g></svg>
