@@ -1,8 +1,8 @@
 <?xml version="1.0" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="body_1" width="256" height="192">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="body_1" width="102" height="77">
 
-<g transform="matrix(0.29268295 0 0 0.29268295 25.85366 -0)">
+<g transform="matrix(0.11737805 0 0 0.11737805 10.03506 -0)">
     <path d="M449.6 500.4C 449.6 500.9 449.6 501.3 449.6 501.8C 446.2 501.8 442.80002 501.8 439.4 501.8C 439.4 501.3 439.4 500.9 439.4 500.4C 442.8 497.8 446.2 497.8 449.6 500.4z" stroke="none" fill="#EFEFEF" fill-rule="nonzero" />
     <path d="M696.6 245.6C 697 245.6 697.39996 245.6 697.89996 245.6C 697.89996 248.1 697.89996 250.70001 697.89996 253.20001C 697.1 253.6 696.39996 253.50002 695.8 252.90001C 694.4 250.2 694.1 247.7 696.6 245.6z" stroke="none" fill="#F3F3F3" fill-rule="nonzero" />
     <path d="M696.7 253.2C 697.10004 253.2 697.5 253.2 697.9 253.2C 697.9 254 697.9 254.9 697.9 255.7C 697.4 255.7 697 255.7 696.5 255.7C 695.8 254.8 695.9 254 696.7 253.2z" stroke="none" fill="#F7F7F7" fill-rule="nonzero" />
