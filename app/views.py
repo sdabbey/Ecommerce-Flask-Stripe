@@ -9,7 +9,7 @@ import sqlite3
 import sqlite3 as sql
 
 # Flask modules
-from flask   import render_template, request, jsonify, redirect, g, url_for
+from flask   import render_template, request, jsonify, redirect, g, url_for, flash
 from jinja2  import TemplateNotFound
 from flask_login import login_required, logout_user, current_user, login_user
 from functools import wraps
