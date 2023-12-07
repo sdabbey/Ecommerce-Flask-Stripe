@@ -67,11 +67,11 @@ def contact():
         except:
             flash('Something went wrong. Please try again.', 'danger')
 
-    return render_template('contact-us.html')
+    return render_template('pages/contact-us.html')
 
 @app.route('/thank_you')
 def thank_you():
-    return render_template('thank-you.html')
+    return render_template('pages/thank-you.html')
 
 
 
