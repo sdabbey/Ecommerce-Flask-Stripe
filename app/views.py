@@ -66,7 +66,7 @@ def contact():
 
         try:
             mail.send(msg)
-            return redirect(url_for('thank_you'))
+            return redirect(url_for('thank-you'))
         except:
             flash('Something went wrong. Please try again.', 'danger')
 
