@@ -23,6 +23,15 @@ from app.util import get_products, Product, load_product, load_product_by_slug, 
 
 import stripe
 
+#mail configuration
+from app import mail
+from app.config import Config
+
+from flask_mail import Message
+from .models import User, ContactUsMessages
+default_sender = Config.MAIL_DEFAULT_SENDER
+
+
 # Stripe Credentials
 stripe_keys = {
     "secret_key"     : app.config['STRIPE_SECRET_KEY'     ] ,
@@ -402,3 +411,4 @@ def is_logged_in():
     if current_user.is_authenticated:
         return True
     return False
+    
