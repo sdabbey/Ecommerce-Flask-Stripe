@@ -8,23 +8,6 @@ import base64
 import sqlite3
 import sqlite3 as sql
 
-# Mail Module
-from flask_mail import Mail, Message
-
-app = Flask(__name__)
-
-app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER')
-app.config['MAIL_PORT'] = int(os.getenv('MAIL_PORT', 587))
-app.config['MAIL_USE_TLS'] = os.getenv('MAIL_USE_TLS', 'True') == 'True'
-app.config['MAIL_USE_SSL'] = os.getenv('MAIL_USE_SSL', 'False') == 'True'
-app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
-app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
-
-mail = Mail(app)
-
-
-
-
 # Flask modules
 from flask   import render_template, request, jsonify, redirect, g, url_for
 from jinja2  import TemplateNotFound
@@ -52,6 +35,19 @@ stripe.api_key = stripe_keys["secret_key"]
 
 ###############################################
 # Contact Form
+
+
+# Mail Module
+from flask_mail import Mail, Message
+
+app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER')
+app.config['MAIL_PORT'] = int(os.getenv('MAIL_PORT', 587))
+app.config['MAIL_USE_TLS'] = os.getenv('MAIL_USE_TLS', 'True') == 'True'
+app.config['MAIL_USE_SSL'] = os.getenv('MAIL_USE_SSL', 'False') == 'True'
+app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
+
+mail = Mail(app)
 
 @app.route('/contact', methods=['GET', 'POST'])
 def contact():
