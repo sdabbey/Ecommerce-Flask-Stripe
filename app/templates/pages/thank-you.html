@@ -1,0 +1,30 @@
+{% extends 'layouts/base.html' %}
+{% extends 'layouts/base.html' %}
+
+{% block title %} Raspberry Pi Devbox {% endblock title %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block body_class %} Contact Us bg-gray-100 {% endblock body_class %}
+
+{% block content %}
+
+  {% include "includes/navigation-light.html" %}
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-8 text-center">
+        <h1>Thank You!</h1>
+        <p>Your message has been sent successfully. We will get back to you soon.</p>
+        <a href="/" class="btn btn-primary">Return to Home</a>
+      </div>
+    </div>
+  </div>
+  {% endblock content %}
+
+  <!-- Specific JS goes HERE --> 
+  {% block javascripts %}
+  
+    <script src="/static/assets/js/soft-design-system.min.js?v=1.0.1" type="text/javascript"></script>
+  
+  {% endblock javascripts %}
