@@ -11,6 +11,7 @@ import sqlite3 as sql
 # Mail Module
 from flask_mail import Mail, Message
 
+app = Flask(__name__)
 
 app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER')
 app.config['MAIL_PORT'] = int(os.getenv('MAIL_PORT', 587))
