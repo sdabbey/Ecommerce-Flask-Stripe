@@ -43,6 +43,21 @@
         text-align: left;  /* Align text to the left */
 }
 
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container, .inner-container { width: 95%; }
+            .feature-image img { max-width: 350px; }
+        }
+
+        @media (max-width: 600px) {
+            .feature-title, .feature-description { font-size: 0.9em; }
+            .summary-title, .features-title, .faq-title { font-size: 1.3em; }
+        }
+
+        @media (max-width: 480px) {
+            .feature-image img { max-width: 300px; }
+        }
+
     </style>
 </head>
 <body>
