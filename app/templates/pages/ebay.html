@@ -31,6 +31,17 @@
          display: inline-block; /* Align logos in a line */
          }
 
+        .command-line {
+        background-color: #f0f0f0; /* Light grey background */
+        color: #333; /* Darker text color for contrast */
+        font-family: 'Courier New', Courier, monospace; /* Monospaced font for code-like appearance */
+        padding: 10px; /* Some padding around the text */
+        border-radius: 5px; /* Optional: rounded corners */
+        margin: 10px 0; /* Vertical margin for spacing */
+        white-space: pre; /* Maintains whitespace formatting */
+        overflow-x: auto; /* Adds horizontal scrollbar if the line is too long */
+}
+
     </style>
 </head>
 <body>
@@ -185,16 +196,17 @@
                 <li>Insert the preloaded micro SD card into your Raspberry Pi and boot.</li>
 
                 <li>Open a terminal window and change directory with the command line: </li>
-                
+                <div class="command-line"></div>
                 cd AI-Agent-Host 
-
+            </div> 
                 <li> Start  Services from the command line:</li>
-
+                <div class="command-line">
                 sudo docker compose up --build -d
-
+            </div> 
                 <li> After Usage Stop  Services from the command line:</li>
-
+                <div class="command-line">
                 sudo docker compose -v down
+            </div> 
             </ul>
                  </p>
 
@@ -214,8 +226,10 @@
          <p>Start working with the existing programm such as crypto live streaming data and weather station 
           with your own bme680 sensor. </p>
          
-
-
+<p></p>
+<p></p>
+<p></p>
+<p></p>
 
             <!-- Add more questions as needed -->
 
