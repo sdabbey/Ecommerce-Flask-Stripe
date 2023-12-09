@@ -1,4 +1,6 @@
-<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="256px" height="256px" viewBox="0,0,256,256"><g transform="translate(51.2,51.2) scale(0.6,0.6)"><g fill="none" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal"><g><circle cx="128.3" cy="68.1" r="59.9" fill="#6f6f6f"></circle><circle cx="60" cy="187.9" r="59.9" fill="#676767"></circle><circle cx="196" cy="187.9" r="59.9" fill="#747474"></circle></g></g></g><
-    
-    <text xmlns="http://www.w3.org/2000/svg" x="40" y="256" font-family="Verdana" font-size="40" fill="grey">Julia</text>
-    </svg>
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="256px" height="256px" viewBox="0,0,256,256"><g transform="translate(51.2,51.2) scale(0.6,0.6)"><g fill="none" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal"><g><circle cx="128.3" cy="68.1" r="59.9" fill="#6f6f6f"></circle><circle cx="60" cy="187.9" r="59.9" fill="#676767"></circle><circle cx="196" cy="187.9" r="59.9" fill="#747474"></circle></g></g></g>
+
+
+
+<text xmlns="http://www.w3.org/2000/svg" x="40" y="256" font-family="Verdana" font-size="40" fill="grey">Julia</text>
+</svg>
