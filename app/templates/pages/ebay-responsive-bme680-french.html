@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet">
+    <title>Raspberry Pi 4 Devbox Powered By AI Agent Host</title>
+    <style>
+        /* Default font for the body */
+        body {
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        /* Header Section */
+        .header {
+            text-align: center;
+            /* Center-aligns text within the header */
+        }
+
+        /* Main image settings */
+        .main-img {
+            object-fit: cover;
+            /* Scales the image to cover its container */
+            width: 100%;
+            /* Sets the width of the image to 100% of its container */
+        }
+
+        /* Container settings */
+        .container {
+            margin: 0px 10%;
+            /* Margin on left and right of container, using 10% of the viewport width */
+            box-sizing: border-box;
+            /* Ensures padding and border are included in the container's total width */
+        }
+
+        /* Inner Container holding Feature Container and Features */
+        .inner-container {
+            width: 100%;
+            /* Full width of its container */
+            display: flex;
+            /* Uses flexbox layout */
+            align-items: center;
+            /* Aligns items vertically at the center */
+            justify-content: center;
+            /* Centers content horizontally */
+        }
+
+        /* Feature Container settings */
+        .features-container {
+            width: 60%;
+            /* Width of the feature container */
+            box-sizing: border-box;
+            /* Padding and border are included in the width */
+        }
+
+        /* Individual feature settings */
+        .feature {
+            margin: 20px 0px;
+            /* Margin for top and bottom, 0px for left and right */
+        }
+
+        /* Feature title settings */
+        .feature-title {
+            font-size: 1em;
+            /* Font size for the feature titles */
+            font-weight: bold;
+            /* Makes the title text bold */
+        }
+
+        /* Feature description settings */
+        .feature-description {
+            font-size: 1em;
+            /* Font size for the feature descriptions */
+        }
+
+        /* Feature image settings */
+        .feature-image {
+            width: 40%;
+            /* Width of the feature image container */
+            box-sizing: border-box;
+            /* Padding and border included in the width */
+        }
+
+        /* Image inside the feature image container settings */
+        .feature-image img {
+            width: 100%;
+            /* Image width set to 100% of its container */
+        }
+
+        /* Logo Selection */
+        .logo-section {
+            display: flex;
+            /* Uses flexbox layout */
+            flex-wrap: wrap;
+            /* Allows logos to wrap onto multiple lines */
+            justify-content: center;
+            /* Centers logos horizontally */
+            align-items: center;
+            /* Centers logos vertically */
+            margin: 30px 0px;
+            /* Margin for top and bottom, 0px for left and right */
+        }
+
+        /* Settings for individual logos */
+        .logo-section img {
+            margin: 10px;
+            /* Margin between logos */
+            width: 120px;
+            /* Fixed width for each logo */
+            height: auto;
+            /* Maintains aspect ratio */
+        }
+
+        /* Title Font Size Control */
+        .summary-title,
+        .features-title,
+        .services-title,
+        .faq-title {
+            font-size: 1.5em;
+            /* Font size for specific titles */
+            font-weight: bold;
+            /* Makes the titles bold */
+            margin-top: 30px;
+            /* Spacing from the top */
+        }
+
+        /* List item Control */
+        .list-item {
+            margin-left: 20px;
+            /* Left margin for list items */
+            list-style-type: disc;
+            /* Bullet points for list items */
+            font-size: 1em;
+            /* Font size for list items */
+            font-weight: bold;
+            /* Makes list items bold */
+        }
+
+        /* Styling for command-line blocks */
+        .command-line {
+            background-color: #f0f0f0;
+            /* Light grey background */
+            color: #333;
+            /* Darker text color for contrast */
+            font-family: 'Courier New', Courier, monospace;
+            /* Monospaced font for code-like appearance */
+            padding: 10px;
+            /* Padding around the text */
+            border-radius: 5px;
+            /* Rounded corners */
+            margin: 10px 0;
+            /* Vertical margin for spacing */
+            white-space: pre;
+            /* Maintains whitespace formatting */
+            overflow-x: auto;
+            /* Adds horizontal scrollbar if necessary */
+            text-align: left;
+            /* Align text to the left */
+        }
+
+        /* Media Query for responsiveness on different screen sizes */
+        @media screen and (max-width:768px) {
+            .container {
+                margin: 10px 10px;
+                /* Adjusted margin for smaller screens */
+            }
+
+            .inner-container {
+                width: 100%;
+                /* Full width */
+                display: flex;
+                /* Uses flexbox layout */
+                flex-direction: column;
+                /* Arranges content in a column */
+                justify-content: flex-start;
+                /* Aligns content to the top */
+                align-items: center;
+                /* Centers content horizontally */
+            }
+
+            .features-container,
+            .feature-image {
+                width: 100%;
+                /* Full width for feature containers and images */
+                box-sizing: border-box;
+                /* Padding and border included in width */
+            }
+
+            .feature-image img {
+                width: 100%;
+                /* Image width set to 100% */
+                margin-bottom: 20px;
+                /* Margin at the bottom of the image */
+            }
+
+            .logo-section {
+                flex-wrap: wrap;
+                /* Allows logos to wrap onto multiple lines */
+                justify-content: center;
+                /* Centers logos horizontally */
+                align-items: center;
+                /* Centers logos vertically */
+                margin: 20px 0px;
+                /* Margin for top and bottom */
+            }
+
+            .logo-section img {
+                margin: 0px 10px;
+                /* Adjusted margin between logos */
+                width: 85px;
+                /* Reduced width for smaller screens */
+                box-sizing: border-box;
+                /* Padding and border included in width */
+                height: auto;
+                /* Maintains aspect ratio */
+            }
+
+            .command-line {
+                padding: 10px;
+                /* Padding around the text */
+                margin: 5px 0px;
+                /* Adjusted margin */
+                box-sizing: border-box;
+                /* Padding and border included in width */
+                white-space: normal;
+                /* Normalizes whitespace */
+            }
+
+            ul li {
+                padding-left: 0;
+                /* Removes left padding for list items */
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <img class="main-img" src="https://i.ebayimg.com/images/g/twEAAOSwkbplc0s3/s-l1600.png" alt="Product Image">
+    </div>
+
+    <div class="container">
+
+         <!-- Promotion header -->
+ <div class="summary">
+
+    <div class="summary-title">Devbox Raspberry Pi  </div>
+    <p>Nous offrons un service d'installation pour AI Agent Host, incluant la préparation d'une carte SD Micro de 64GB avec le système déjà chargé. </p>
+    <p>AI Agent Host est un environnement modulaire de pointe, optimisé pour une expérimentation rapide, une gestion des données efficace et le développement d'applications basées sur des modèles de langage.</p>
+      <p> Maximisez les capacités de AI Agent Host et du Raspberry Pi avec notre station météo, notre système de traçage GPS, et nos outils d'analyse de données de marché, tous simples d'utilisation. Que vous soyez débutant ou un utilisateur expérimenté, ces outils offrent des possibilités fascinantes. Vous pourrez vous connecter à distance à votre station météo, à votre système de traçage GPS, et à vos analyses de données de marché. Découvrez des projets novateurs conçus pour un démarrage rapide dans des domaines variés tels que la santé, la vision par ordinateur, la robotique, et les interfaces homme-IA, parmi d'autres.</p>
+
+        </div>
+
+        <div class="inner-container">
+
+            <div class="features-container">
+
+                <!-- Product Features -->
+                <div class="feature">
+                    <div class="feature-title">Fully Integrated System</div>
+                    <div class="feature-description">The AI Agent Host offers a fully integrated system, combining
+                        hardware and software for streamlined AI development.</div>
+                </div>
+
+                <div class="feature">
+                    <div class="feature-title">Prebuilt Components</div>
+                    <div class="feature-description">Jumpstart your AI projects with our range of prebuilt components,
+                        designed for ease of use and reliability.</div>
+                </div>
+
+                <div class="feature">
+                    <div class="feature-title">LangChain Compatibility</div>
+                    <div class="feature-description">Leverage cutting-edge language processing with LangChain
+                        compatibility for smarter, more intuitive AI interactions.</div>
+                </div>
+
+                <div class="feature">
+                    <div class="feature-title">Seamless Data Interface</div>
+                    <div class="feature-description">Connect, import, and manage data effortlessly with our seamless
+                        data interface, enhancing your AI project's efficiency.</div>
+                </div>
+
+            </div>
+            <div class="feature-image">
+                <img src="https://i.ebayimg.com/images/g/HQ8AAOSwH35lcveG/s-l1600.png" alt="Feature Image">
+            </div>
+        </div>
+        <!-- Add more features as needed -->
+
+        <!-- Logo Section -->
+        <div class="feature-title">The AI Agent Host is built with top open-source software: Docker, Docker Compose, VSCode, QuestDB, Grafana, Nginx.</div>
+        <div class="logo-section">
+            <img src="https://quantiota.com/static/assets/img/logos/gray-logos/logo-docker.svg" alt="Logo 1"
+                class="logo">
+            <img src="https://quantiota.com/static/assets/img/logos/gray-logos/logo-docker-compose.svg" alt="Logo 2"
+                class="logo">
+            <img src="https://quantiota.com/static/assets/img/logos/gray-logos/logo-vscode.svg" alt="Logo 3"
+                class="logo">
+            <img src="https://quantiota.com/static/assets/img/logos/gray-logos/logo-questdb.svg" alt="Logo 4"
+                class="logo">
+            <img src="https://quantiota.com/static/assets/img/logos/gray-logos/logo-grafana.svg" alt="Logo 5"
+                class="logo">
+            <img src="https://quantiota.com/static/assets/img/logos/gray-logos/logo-nginx.svg" alt="Logo 6"
+                class="logo">
+        </div>
+
+        <!-- Simplified Summary -->
+        <div class="summary">
+
+            <div class="summary-title">Simplified Summary</div>
+            <p>The AI Agent Host can be complex given that it involves several aspects such as AI, edge computing,
+                Docker,
+                and Raspberry Pi. Let me attempt to simplify it:</p>
+
+            <p>The AI Agent Host is essentially a setup that allows you to run AI applications directly on a Raspberry
+                Pi,
+                which is a small, low-cost computer often used in various tech projects.</p>
+
+            <p>The AI Agent Host functions as a "host" for an AI "agent". These applications can interact with live
+                data,
+                coming from either online sources (APIs) or the Raspberry Pi's own sensors, to make decisions or
+                predictions.</p>
+
+            <p>Moreover, the AI Agent Host is designed to be modular, which means you can add or remove different
+                components
+                depending on what your project needs. For example, if you need a specific database or visualization
+                tool,
+                you can add it to the setup.</p>
+
+            <p>Also, you can use this setup in combination with a powerful GPU server. So, if you have tasks that are
+                too
+                demanding for the Raspberry Pi, you can send them to this server for processing. This is made possible
+                with
+                the inclusion of VSCode and remote connection to a JupyterHub installed on the GPU server.</p>
+
+            <p>Finally, the AI Agent Host uses lightweight services like QuestDB and Grafana, suitable for the Raspberry
+                Pi's limited resources, and is optimized for Raspberry Pi OS and DietPi, a lightweight operating system
+                ideal for single-board computers like Raspberry Pi.</p>
+
+            <p>I hope this explanation helps simplify the concept of the AI Agent Host. If you have any further
+                questions or
+                if something is still unclear, feel free to ask!</p>
+
+            <!-- Add more points as needed -->
+        </div>
+
+        <!-- Key Features -->
+        <div class="key-features">
+
+            <div class="features-title">Key Features</div>
+            <p>The AI Agent Host, designed specifically for AI development, offers several key features making it an
+                ideal
+                solution for Raspberry Pi 4 with 8GB RAM, especially when running DietPi OS:</p>
+            <ul>
+                <p>
+                    <li class="list-item">Modular Environment: </li>
+                    The AI Agent Host is built as a module-based system, allowing different components to be added or
+                    removed based on the requirements of the project. This is perfect for the customizable nature of
+                    Raspberry Pi. Furthermore, by adding an AI Agent container, the AI Agent Host can be transformed
+                    into an
+                    AI Agent Lab, expanding its capabilities for AI development and experimentation.
+                </p>
+                <p>
+                    <li class="list-item">Live Data Interaction: </li>
+                    With the ability to work with live data from both APIs and Raspberry Pi's own sensors, AI Agent Host
+                    becomes a powerful tool for real-time data analysis, modeling, and decision-making.
+                </p>
+                <p>
+                    <li class="list-item">Lightweight Services: </li>
+                    Services like QuestDB and Grafana used in the AI Agent Host are lightweight yet robust, making them
+                    suitable for the Raspberry Pi's limited hardware resources compared to larger servers.
+                </p>
+                <p>
+                    <li class="list-item">Remote Development Capabilities:</li>
+                    The inclusion of Code-Server allows you to connect to a remote JupyterHub installed on a powerful
+                    GPU
+                    Server when necessary, using Raspberry Pi as the Docker host.
+                </p>
+                <p>
+                    <li class="list-item">Data Handling and Visualization: </li>
+                    QuestDB for efficient data handling and Grafana for intuitive data visualization are integral for
+                    any AI
+                    and machine learning projects.
+                </p>
+                <p>
+                    <li class="list-item">Optimized for DietPi: </li>
+                    The AI Agent Host's compatibility with DietPi, a lightweight OS optimized for single-board computers
+                    like Raspberry Pi, ensures efficient use of the Raspberry Pi's hardware resources.
+                </p>
+                <p>
+                    <li class="list-item">Community Support:</li>
+                    With active communities for both Raspberry Pi and AI Agent Host, you can expect robust support and
+                    resources for your AI development projects.
+                </p>
+
+                <!-- Add more features as needed -->
+            </ul>
+        </div>
+
+        <!-- Edge Computing -->
+        <div class="edge-computing">
+
+            <div class="summary-title">AI Agent Host: A Novel Approach to Edge Computing</div>
+            <p>The AI Agent Host offers an innovative setup, connecting edge devices like the Raspberry Pi to a
+                JupyterHub
+                on a remote GPU server. This unique configuration, part of a broader trend known as edge computing,
+                enables
+                real-time data analysis and decision-making on the edge while offloading computationally intensive tasks
+                to
+                a GPU server in the cloud.</p>
+
+            <p>While this specific setup is not commonly seen or standardized, it adds significant value to fields that
+                require real-time data analysis and decision-making capabilities at the edge. Potential applications
+                include
+                autonomous vehicles, Internet of Things (IoT), robotics, and more.</p>
+
+            <p>One of the primary challenges in edge computing is developing an infrastructure that allows for seamless
+                communication and integration between edge devices and cloud servers. The AI Agent Host provides a
+                powerful
+                solution to this challenge, offering a framework that could potentially standardize these interactions.
+            </p>
+
+            <p>As the AI industry continues to evolve rapidly, this innovative approach may become more commonplace. The
+                AI
+                Agent Host is at the forefront of this technological development, paving the way for new use cases and
+                implementations.</p>
+
+            <p>Please note that while we strive to keep this document up-to-date, the field of AI is continuously
+                evolving.
+                For the latest information and developments, we recommend staying active in relevant online communities
+                and
+                keeping up with the latest research.</p>
+
+            <!-- Add more points as needed -->
+        </div>
+
+        <!-- Frequently Asked Questions -->
+        <div class="FAQ">
+
+            <div class="faq-title">Frequently Asked Questions</div>
+            <ul>
+                <p>
+                    <li class="list-item">What is the AI Agent Host? </li>
+                    The AI Agent Host is a Dockerized environment designed for AI development. It's built on a modular
+                    system that allows different components to be added or removed based on the requirements of the
+                    project.
+                </p>
+                <p>
+                    <li class="list-item">Why use the AI Agent Host on a Raspberry Pi 4 8GB?</li>
+                    The AI Agent Host is lightweight yet powerful, making it suitable for the Raspberry Pi's limited
+                    hardware resources. It's designed to work with live data from both APIs and Raspberry Pi's own
+                    sensors,
+                    making it a powerful tool for real-time data analysis, modeling, and decision-making
+                </p>
+                <p>
+                    <li class="list-item"> Which services does the AI Agent Host include? </li>
+                    The AI Agent Host includes services such as Code-Server (a code editor), Grafana (a visualization
+                    tool),
+                    and QuestDB (a database). Additional services can be added or removed as needed.
+                </p>
+                <p>
+                    <li class="list-item"> What do I need to connect to the Code-Server from a browser with HTTPS?</li>
+                    A fully qualified domain name (FQDN) is necessary to connect to the Code-Server from a browser using
+                    HTTPS. The FQDN ensures that the secure connection is correctly established.
+                </p>
+                <p>
+                    <li class="list-item"> Can the AI Agent Host on a Raspberry Pi be used in combination with a remote
+                        JupyterHub installed on a GPU server? </li>
+                    Yes, this is one of the unique and powerful features of the AI Agent Host setup. You can use the AI
+                    Agent Host installed on a Raspberry Pi for real-time data analysis and decision making at the edge,
+                    while also connecting remotely to a JupyterHub installed on a GPU server for handling
+                    computationally
+                    intensive tasks. This innovative setup opens up new possibilities for AI development, especially in
+                    fields like IoT and edge computing.
+                </p>
+
+                <p>
+                    <li class="list-item">Can I use the AI Agent Host with other versions of the Raspberry Pi?</li>
+                    While the AI Agent Host has been tested and works well on the Raspberry Pi 4 8GB model, it should
+                    theoretically work on other models with sufficient hardware capabilities. However, performance may
+                    vary.
+                </p>
+                <p>
+                    <li class="list-item">Which operating systems are compatible with the AI Agent Host?</li>
+                    The AI Agent Host has been tested and found to be compatible with Raspberry Pi (64-bit) with Desktop
+                    and
+                    DietPi installed on a Raspberry Pi 4 8GB. Compatibility with other Linux distributions hasn't been
+                    extensively tested.
+                </p>
+                <p>
+                    <li class="list-item"> Can I add my own services to the AI Agent Host? </li>
+                    Absolutely! The AI Agent Host is designed to be modular, allowing you to add or remove Docker
+                    containers
+                    as needed. This means you can customize the environment to include the exact tools and services that
+                    best suit your specific project's needs.
+                </p>
+                <p>
+                    <li class="list-item"> What if I need help or support with the AI Agent Host? </li>
+                    There are active communities for both Raspberry Pi and AI Agent Host where you can expect robust
+                    support
+                    and resources for your AI development projects.
+                </p>
+            </ul>
+            <!-- Add more questions as needed -->
+        </div>
+
+        <!-- Getting Started-->
+        <div class="getting-started">
+
+            <div class="summary-title">Getting Started</div>
+            <p>To use the AI Agent Host, follow these steps:
+            <ul>
+                <li>Insert the preloaded micro SD card into your Raspberry Pi and boot.</li>
+
+                <li>Open a terminal window and change directory with the command line: </li>
+                <p class="command-line">
+                    cd AI-Agent-Host
+                </p>
+                <li> Start Services from the command line:</li>
+                <p class="command-line">
+                    sudo docker compose up --build -d
+                </p>
+                <li> After Usage Stop Services from the command line:</li>
+                <p class="command-line">
+                    sudo docker compose -v down
+                </p>
+            </ul>
+            </p>
+
+            <!-- Add more points as needed -->
+        </div>
+
+        <!-- Usage-->
+        <div class="usage">
+
+            <div class="summary-title">Usage</div>
+            <p>Once the services are up and running, you can access the AI Agent Host interfaces:</p>
+            <li>VSCode: Visit localhost:8080 in your web browser. The password is yourpassword</li>
+            <li>QuestDB: Visit localhost:9000 in your web browser. The user/password are the default one: admin:admin
+            </li>
+            <li>Grafana: Visit localhost:3000 in your web browser. The user/password are the default one: admin:admin
+            </li>
+            <p>Start working with live streaming data from cryptocurrencies and data from a weather station
+                using a BME680 sensor, </p>
+
+        </div>
+
+
+ <!-- Key Services -->
+ <div class="key-services">
+
+    <div class="services-title">You Will Get</div>
+    <p>A complete setup service for advanced Raspberry Pi configurations, 
+        tailored for sophisticated data management, application development, and rapid experimentation with language models.
+        </p>
+       
+    </p>
+    <ul>
+
+        <p>
+            <li class="list-item"> Preloaded Micro SD Card (64GB) </li>
+            Ready-to-use with all necessary software and systems described below.
+        </p>
+
+        <p>
+            <li class="list-item"> WaveShare BME680 Sensors </li>
+            BME680 Environmental Sensor to measure Barometric pressure, 
+            Environmental temperature, Relative humidity, VOC gas change detection 
+            (supports IAQ calculation in combination with the software package).
+        </p>
+
+        <p>
+            <li class="list-item"> Raspberry Pi (64-bit) Operating System with Desktop </li>
+           Optimized for high-performance, compatible with 64-bit processing
+        </p>
+        <p>
+            <li class="list-item">Docker: </li>
+            Docker platform installed for creating, deploying, and running applications in containers, which simplifies the deployment of complex applications.
+        </p>
+        <p>
+            <li class="list-item">Docker Compose: </li>
+            A tool for defining and running multi-container Docker applications, making it easier to manage applications composed of multiple Docker containers.</p>
+        <p>
+            <li class="list-item">AI Agent Host:</li>
+            A cutting-edge, module-based environment designed for rapid experimentation, data management, and application development using language models.
+        </p>
+        <p>
+            <li class="list-item">Coinbase Crypto Market Data Analysis Tools: </li>
+            Specialized software for analyzing cryptocurrency market trends on Coinbase
+            
+        </p>
+        <p>
+            <li class="list-item">BME680-based Weather Station: </li>
+            Accurate environmental sensing of temperature, humidity, atmospheric pressure, and air quality.
+        </p>
+        <p>
+            <li class="list-item">GPS Tracker System:</li>
+            A system for GPS tracking, useful for location tracking and geographic data analysis.
+        </p>
+
+        <!-- Add more features as needed -->
+    </ul>
+</div>
+
+
+<!-- Not Included -->
+<div class="Not-Included">
+
+    <div class="services-title">Not Included</div>
+    <p> The following items are not included in the service package:
+    
+        </p>
+       
+    </p>
+    <ul>
+        <p>
+            <li>Raspberry Pi 4B 8GB </li>
+            <li>4G/LTE based HAT Module</li>
+            <li>Antenna</li>
+            <li>SIM Card</li>
+        </p>
+
+        <!-- Add more features as needed -->
+    </ul>
+</div>
+
+
+
+
+
+        <!-- Diagram-->
+        <div class="diagram">
+
+            <div class="summary-title">AI Agent Host Architecture Diagram</div>
+            <div class="header">
+                <img class="main-img" src="  https://i.ebayimg.com/images/g/HQ8AAOSwH35lcveG/s-l960.png"
+                    alt="Product Image">
+            </div>
+
+        </div>
+    </div>
+
+</body>
+
+</html>
+
+
