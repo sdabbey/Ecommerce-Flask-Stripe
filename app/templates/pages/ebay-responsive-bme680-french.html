@@ -443,10 +443,12 @@
                 <p class="command-line">
                     sudo docker compose up --build -d
                 </p>
-                <li> Une fois que vous avez fini d'utiliser les services, arrêtez-les en utilisant cette commande:</li>
+                <li>Une fois que vous avez terminé d'utiliser les services, vous pouvez les arrêter en utilisant la commande suivante:</li>
                 <p class="command-line">
                     sudo docker compose -v down
                 </p>
+                <p>Ces étapes vous permettront de démarrer et d'arrêter les services de l'AI Agent Host sur votre Raspberry Pi. Assurez-vous de bien suivre les instructions pour une expérience sans encombre.</p>
+
             </ul>
             </p>
 
@@ -456,15 +458,13 @@
         <!-- Usage-->
         <div class="usage">
 
-            <div class="summary-title">Usage</div>
-            <p>Once the services are up and running, you can access the AI Agent Host interfaces:</p>
-            <li>VSCode: Visit localhost:8080 in your web browser. The password is yourpassword</li>
-            <li>QuestDB: Visit localhost:9000 in your web browser. The user/password are the default one: admin:admin
+            <div class="summary-title">Utilisation</div>
+            <p>Une fois que les services de l'AI Agent Host sont actifs, vous pouvez accéder aux différentes interfaces:</p>
+            <li><b>VSCode</b> : Ouvrez votre navigateur web et allez à l'adresse <b>localhost:8080</b>. Utilisez le mot de passe  <b>yourpassword</b> pour vous connecter.</li>
+            <li><b>QuestDB</b> : Pour accéder à la base de données, <b>>visitez localhost:9000</b> dans votre navigateur. L'utilisateur et le mot de passe sont ceux par défaut : admin:admin
+            <li><b>Grafana</b> : Visitez <b>localhost:3000</b> dans votre navigateur web. L'utilisateur et le mot de passe sont ceux par défaut : <b>admin:admin</b>
             </li>
-            <li>Grafana: Visit localhost:3000 in your web browser. The user/password are the default one: admin:admin
-            </li>
-            <p>Start working with live streaming data from cryptocurrencies and data from a weather station
-                using a BME680 sensor, </p>
+            <p>Commencez à travailler avec des données de streaming en direct de crypto-monnaies et des données d'une station météorologique utilisant un capteur BME680,</p>
 
         </div>
 
