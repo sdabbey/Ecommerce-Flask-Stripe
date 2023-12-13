@@ -111,10 +111,12 @@ def create_checkout_session(path):
                     "name": product.name,
                     "quantity": 1,
                     "currency": 'usd',
+                    "tax_behavior": "exclusive",
+                    "tax_code": "txcd_37010000",
                     "amount": product.price * 100,
                 }
-            ]
-              
+            ],
+              automatic_tax={"enabled": True},
         )
         return jsonify({"sessionId": checkout_session["id"]})
     except Exception as e:
