@@ -110,7 +110,7 @@ def create_checkout_session(path):
                 {
                     "name": product.name,
                     "quantity": 1,
-                    "currency": 'usd',
+                    "currency": 'eur',
                     "amount": product.price * 100,
                 }
             ]
