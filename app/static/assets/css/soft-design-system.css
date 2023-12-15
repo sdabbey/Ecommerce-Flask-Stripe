@@ -21521,3 +21521,24 @@ pre[class*="language-"] {
   cursor: help;
 }
 
+   /* Styling for command-line blocks */
+ .command-line {
+   background-color: #f0f0f0;
+   /* Light grey background */
+   color: #333;
+   /* Darker text color for contrast */
+   font-family: 'Courier New', Courier, monospace;
+   /* Monospaced font for code-like appearance */
+   padding: 10px;
+   /* Padding around the text */
+   border-radius: 5px;
+   /* Rounded corners */
+   margin: 10px 0;
+   /* Vertical margin for spacing */
+   white-space: pre;
+   /* Maintains whitespace formatting */
+   overflow-x: auto;
+   /* Adds horizontal scrollbar if necessary */
+   text-align: left;
+   /* Align text to the left */
+      }
