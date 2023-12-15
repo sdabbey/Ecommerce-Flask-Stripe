@@ -1,0 +1,214 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %} Raspberry Pi Devbox {% endblock title %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block body_class %} AI Agent Host {% endblock body_class %}
+
+{% block content %}
+
+  {% include "includes/navigation-transparent.html" %}
+  <!-- -------- START HEADER 2 w/ waves and typed text ------- -->
+<header class="position-relative">
+
+  <div class="page-header min-vh-100" style="background-image: url(/static/assets/img/illustrations/kindle-header.jpg);">
+    <span class="mask bg-gradient-primary"></span>
+    <div class="container">
+
+      <div class="row">
+        <div class="col-lg-8 text-start">
+          <h1 class="text-white">AI Agent Host SD Card Image <span class="text-white" id="typed"></span></h1>
+
+          <p class="lead text-white text-start pe-5 mt-4">The AI Agent Host integrates several advanced technologies and offers a unique combination of features for the development of language model-driven applications. </p>
+          <br />
+          <div class="buttons">
+            <a href="https://buy.stripe.com/5kA7twftw1J67lueUV"> <button type="button" class="btn btn-lg btn-white">buy</button></a>
+            <button type="button" class="btn btn-lg btn-link text-white">Raspberry Pi OS Lite</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="position-absolute w-100 z-index-1 bottom-0">
+    <svg class="waves" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+    viewBox="0 24 150 40" preserveAspectRatio="none" shape-rendering="auto">
+      <defs>
+        <path id="gentle-wave" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z" />
+      </defs>
+      <g class="moving-waves">
+        <use xlink:href="#gentle-wave" x="48" y="-1" fill="rgba(251,251,251,0.40" />
+        <use xlink:href="#gentle-wave" x="48" y="3" fill="rgba(251,251,251,0.35)" />
+        <use xlink:href="#gentle-wave" x="48" y="5" fill="rgba(251,251,251,0.25)" />
+        <use xlink:href="#gentle-wave" x="48" y="8" fill="rgba(251,251,251,0.20)" />
+        <use xlink:href="#gentle-wave" x="48" y="13" fill="rgba(251,251,251,0.15)" />
+        <use xlink:href="#gentle-wave" x="48" y="16" fill="rgba(251,251,251,0.95" />
+      </g>
+    </svg>
+  </div>
+</header>
+<!-- -------- END HEADER 2 w/ waves and typed text ------- -->
+
+
+
+
+
+<section class="">
+    <div class="container py-5">
+
+
+      <div class="row align-items-center">
+        <div class="col-lg-8 mx-auto text-center">
+          <h3 class="text-gradient text-primary mb-0">Raspberry Pi 4 Devbox</h3>
+          <p class="lead mb-md-5 mb-4">
+            We offer a setup service for the AI Agent Host, which includes preloading the system onto a Micro 64GB SD card Image.
+            </p>
+
+          
+        </div>
+      </div>
+
+
+
+
+
+      <div class="row align-items-center">
+        <div class="col-md-6 mb-md-0 mb-4">
+
+
+
+            <h3>You Will Get:</h3>
+          
+          <ul>
+          <li> Micro SD Card (64GB) Image:</li>
+          Ready-to-use with all necessary software and systems described below.
+          <li> Raspberry Pi (64-bit) Operating System with Desktop:</li>
+          Optimized for high-performance, compatible with 64-bit processing
+          <li> Docker:</li>
+          Docker platform installed for creating, deploying, and running applications in containers, which simplifies the deployment of complex applications.
+          <li> Docker Compose:</li>
+          A tool for defining and running multi-container Docker applications, making it easier to manage applications composed of multiple Docker containers.
+          <li> AI Agent Host:</li>
+          A cutting-edge, module-based environment designed for rapid experimentation, data management, and application development using language models.
+          <li> Coinbase Crypto Market Data Analysis Tools:</li>
+          Specialized software for analyzing cryptocurrency market trends on Coinbase
+          <li> BME680-based Weather Station:</li>
+          Accurate environmental sensing of temperature, humidity, atmospheric pressure, and air quality
+          <li> GPS Tracker System:</li>
+          A system for GPS tracking, useful for location tracking and geographic data analysis.
+          </ul>
+        
+
+        </div>
+
+
+        <div class="col-md-6">
+          <div class="blur-shadow-image text-center">
+            <img src="/static/assets/img/illustrations/cover-sans.jpg" alt="img-blur-shadow" class="img-fluid shadow border-radius-lg max-height-600">
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+  </section>
+
+  <section class="pt-2 pb-6 bg-gray-100" id="count-stats">
+    <div class="container">
+      
+      <div class="row">
+        <div class="col-8 mx-auto text-center">
+          <h6 class="opacity-5">
+            The AI Agent Host is built with top open-source software</h6>
+        </div>
+      </div>
+
+
+      <div class="row mb-7">
+        
+
+
+        <div class="col-lg-1 cd-md-3 col-23 mb-4">
+          <img class="w-100 opacity-7" src="/static/assets/img/logos/gray-logos/logo-docker.svg">
+         
+        </div>
+
+        <div class="col-lg-1 cd-md-3 col-23 mb-4">
+          <img class="w-100 opacity-7" src="/static/assets/img/logos/gray-logos/logo-docker-compose.svg">
+        </div>
+
+        <div class="col-lg-1 cd-md-3 col-23 mb-4">
+          <img class="w-100 opacity-7" src="/static/assets/img/logos/gray-logos/logo-vscode.svg">
+        </div>
+
+        <div class="col-lg-1 cd-md-3 col-23 mb-4">
+          <img class="w-100 opacity-7" src="/static/assets/img/logos/gray-logos/logo-questdb.svg">
+        </div>
+
+        <div class="col-lg-1 cd-md-3 col-23 mb-4">
+          <img class="w-100 opacity-7" src="/static/assets/img/logos/gray-logos/logo-grafana.svg">
+        </div>
+
+        <div class="col-lg-1 cd-md-3 col-23 mb-4">
+          <img class="w-100 opacity-7" src="/static/assets/img/logos/gray-logos/logo-nginx.svg">
+        </div>
+
+        <div class="col-lg-1 cd-md-3 col-23 mb-4">
+          <img class="w-100 opacity-7" src="/static/assets/img/logos/gray-logos/logo-letsencrypt.svg">
+        </div>
+
+        <div class="col-lg-1 cd-md-3 col-23 mb-4">
+          <img class="w-100 opacity-7" src="/static/assets/img/logos/gray-logos/logo-openai.svg">
+        </div>
+
+
+        <div class="col-lg-1 cd-md-3 col-23 mb-4">
+          <img class="w-100 opacity-7" src="/static/assets/img/logos/gray-logos/logo-langchain.svg">
+        </div>
+
+
+        <div class="col-lg-1 cd-md-3 col-23 mb-4">
+          <img class="w-100 opacity-7" src="/static/assets/img/logos/gray-logos/logo-flask.svg">
+        </div>
+
+        <div class="col-lg-1 cd-md-3 col-23 mb-4">
+          <img class="w-100 opacity-7" src="/static/assets/img/logos/gray-logos/logo-jupyterhub.svg">
+        </div>
+
+        <div class="col-lg-1 cd-md-3 col-23 mb-4">
+          <img class="w-100 opacity-7" src="/static/assets/img/logos/gray-logos/logo-python.svg">
+        </div>
+
+        <div class="col-lg-1 cd-md-3 col-23 mb-4">
+          <img class="w-100 opacity-7" src="/static/assets/img/logos/gray-logos/logo-julia.svg">
+        </div>
+
+
+        <div class="col-lg-1 cd-md-3 col-23 mb-4">
+          <img class="w-100 opacity-7" src="/static/assets/img/logos/gray-logos/logo-r.svg">
+        </div>
+ 
+
+
+        <div class="col-lg-1 cd-md-3 col-23 mb-4">
+          <img class="w-100 opacity-7" src="/static/assets/img/logos/gray-logos/logo-prometheus.svg">
+        </div>
+
+      </div>
+
+
+    </div>
+  </section>
+
+  
+  
+{% endblock content %}
+
+<!-- Specific JS goes HERE --> 
+{% block javascripts %}
+
+  <script src="/static/assets/js/soft-design-system.min.js?v=1.0.1" type="text/javascript"></script>
+
+{% endblock javascripts %}
+
