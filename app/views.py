@@ -7,22 +7,23 @@ import os, json
 import base64
 import sqlite3
 import sqlite3 as sql
-
+from dotenv import load_dotenv
 # Flask modules
-from flask   import render_template, request, jsonify, redirect, g, url_for, flash
+from flask   import render_template, Flask, request, jsonify, redirect, g, url_for, flash
 from jinja2  import TemplateNotFound
 from flask_login import login_required, logout_user, current_user, login_user
 from functools import wraps
-
+from app import app
 from app.models import User
 from . import db
 
 # App modules
-from app      import app
+
 from app.util import get_products, Product, load_product, load_product_by_slug, load_json_product
 
 import stripe
 
+load_dotenv('.env')
 
 # Stripe Credentials
 stripe_keys = {
@@ -57,13 +58,14 @@ def contact():
 
         msg = Message("New Contact Form Submission",
                       sender=email,
-                      recipients=["info@quantiota.com"])  # Replace with your email
+                      recipients=["dehydrus223@gmail.com", "bouarfa.mahi@gmail.com"])  # Replace with your email
         msg.body = f"Name: {name}\nEmail: {email}\nMessage: {message}"
 
         try:
             mail.send(msg)
             return redirect(url_for('thank_you'))
-        except:
+        except Exception as e:
+            print(f"An error occurred: {str(e)}")
             flash('Something went wrong. Please try again.', 'danger')
 
     return render_template('pages/contact-us.html')
