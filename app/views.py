@@ -9,7 +9,7 @@ import sqlite3
 import sqlite3 as sql
 
 # Flask modules
-from flask   import render_template, request, jsonify, redirect, g, url_for
+from flask   import render_template, request, jsonify, redirect, g, url_for, flash
 from jinja2  import TemplateNotFound
 from flask_login import login_required, logout_user, current_user, login_user
 from functools import wraps
@@ -32,6 +32,44 @@ stripe_keys = {
 } 
 
 stripe.api_key = stripe_keys["secret_key"]
+
+
+###############################################
+# Contact Form & Mail Module
+from flask_mail import Mail, Message
+
+app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER')
+app.config['MAIL_PORT'] = int(os.getenv('MAIL_PORT', 587))
+app.config['MAIL_USE_TLS'] = os.getenv('MAIL_USE_TLS', 'True') == 'True'
+app.config['MAIL_USE_SSL'] = os.getenv('MAIL_USE_SSL', 'False') == 'True'
+app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
+
+mail = Mail(app)
+
+@app.route('/contact', methods=['GET', 'POST'])
+def contact():
+    if request.method == 'POST':
+        name = request.form.get('name')
+        email = request.form.get('email')
+        message = request.form.get('message')
+
+        msg = Message("New Contact Form Submission",
+                      sender=email,
+                      recipients=["info@quantiota.com"])  # Replace with your email
+        msg.body = f"Name: {name}\nEmail: {email}\nMessage: {message}"
+
+        try:
+            mail.send(msg)
+            return redirect(url_for('thank_you'))
+        except:
+            flash('Something went wrong. Please try again.', 'danger')
+
+    return render_template('pages/contact-us.html')
+
+@app.route('/thank_you')
+def thank_you():
+    return render_template('pages/thank-you.html')
 
 
 
