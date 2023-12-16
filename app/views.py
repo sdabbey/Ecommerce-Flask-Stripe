@@ -40,7 +40,7 @@ from flask_mail import Mail, Message
 
 app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER')
 app.config['MAIL_PORT'] = int(os.getenv('MAIL_PORT', 587))
-app.config['MAIL_USE_TLS'] = os.getenv('MAIL_USE_TLS', 'False') == 'True'
+app.config['MAIL_USE_TLS'] = os.getenv('MAIL_USE_TLS', 'True') == 'True'
 app.config['MAIL_USE_SSL'] = os.getenv('MAIL_USE_SSL', 'False') == 'True'
 app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
 app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
@@ -48,34 +48,25 @@ app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
 
 mail = Mail(app)
 
-
 @app.route('/contact', methods=['GET', 'POST'])
 def contact():
     if request.method == 'POST':
-        name = request.form.get('name', '')
-        email = request.form.get('email', '')
-        message = request.form.get('message', '')
-
-        if not name or not email or not message:
-            flash('All fields are required.', 'danger')
-            return render_template('pages/contact-us.html')
+        name = request.form.get('name')
+        email = request.form.get('email')
+        message = request.form.get('message')
 
         msg = Message("New Contact Form Submission",
-                      sender=current_app.config['MAIL_DEFAULT_SENDER'],
-                      recipients=["info@quantiota.com"],
-                      reply_to=email)
+                      sender=email,
+                      recipients=["info@quantiota.com"])  # Replace with your email
         msg.body = f"Name: {name}\nEmail: {email}\nMessage: {message}"
 
         try:
             mail.send(msg)
-            flash('Your message has been sent.', 'success')
             return redirect(url_for('thank_you'))
-        except Exception as e:
-            current_app.logger.error(f'Failed to send email: {e}')
+        except:
             flash('Something went wrong. Please try again.', 'danger')
 
     return render_template('pages/contact-us.html')
-
 
 @app.route('/thank_you')
 def thank_you():
