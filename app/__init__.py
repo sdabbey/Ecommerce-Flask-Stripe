@@ -17,6 +17,10 @@ from .config import Config
 # Inject Flask magic
 app = Flask(__name__)
 
+if __name__ == "__main__":
+    app.run(debug=True)
+
+
 # load Configuration
 app.config.from_object( Config ) 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite3'
